@@ -7,6 +7,8 @@ interface AuthContextType {
   session: Session | null;
   signUp: (email: string, password: string, userData?: { firstName?: string; lastName?: string; businessName?: string }) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<{ error: any }>;
+  signInWithApple: () => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
   loading: boolean;
 }
@@ -78,6 +80,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return { error };
   };
 
+  const signInWithGoogle = async () => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl,
+      }
+    });
+    
+    return { error };
+  };
+
+  const signInWithApple = async () => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'apple',
+      options: {
+        redirectTo: redirectUrl,
+      }
+    });
+    
+    return { error };
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut({ scope: 'global' });
     return { error };
@@ -88,6 +116,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     session,
     signUp,
     signIn,
+    signInWithGoogle,
+    signInWithApple,
     signOut,
     loading,
   };
