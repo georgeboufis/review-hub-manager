@@ -13,6 +13,7 @@ import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import Contact from "./pages/Contact";
 import ReplyPage from "./pages/ReplyPage";
+import Integrations from "./pages/Integrations";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -36,6 +37,7 @@ const App = () => (
               <Route index element={<Dashboard />} />
               <Route path="reviews" element={<Reviews />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="integrations" element={<Integrations />} />
               <Route path="settings" element={<Settings />} />
               <Route path="contact" element={<Contact />} />
               <Route path="reply/:reviewId" element={<ReplyPage />} />

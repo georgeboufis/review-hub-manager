@@ -33,7 +33,7 @@ export class IntegrationService {
         };
 
         const result = await ReviewsService.createReview(reviewData);
-        if (result.success) {
+        if (result.data && !result.error) {
           successCount++;
         }
       }
@@ -92,7 +92,7 @@ export class IntegrationService {
         };
 
         const result = await ReviewsService.createReview(reviewData);
-        if (result.success) {
+        if (result.data && !result.error) {
           successCount++;
         }
       }
@@ -117,13 +117,15 @@ export class IntegrationService {
         return { success: false, error: 'User not authenticated' };
       }
 
-      // Store encrypted credentials in user settings or dedicated table
+      // Store credentials in user_integrations table
+      // Note: This will work once Supabase types are regenerated after migration
+      // For now, we'll use a direct insert approach
       const { error } = await supabase
-        .from('user_integrations')
+        .from('user_integrations' as any)
         .upsert({
           user_id: user.id,
           platform,
-          credentials: credentials, // This should be encrypted in production
+          credentials: credentials,
           updated_at: new Date().toISOString(),
         });
 
