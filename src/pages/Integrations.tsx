@@ -1,20 +1,27 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Globe, MapPin, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Upload, Globe, MapPin, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { IntegrationService } from '@/services/integrationService';
+import { useReviews } from '@/hooks/useReviews';
 
 export default function Integrations() {
   const [googleApiKey, setGoogleApiKey] = useState('');
   const [googlePlaceId, setGooglePlaceId] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const bookingFileRef = useRef<HTMLInputElement>(null);
+  const airbnbFileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { fetchReviews } = useReviews();
 
+  // Store Google API credentials and fetch reviews
   const handleGoogleConnect = async () => {
     if (!googleApiKey || !googlePlaceId) {
       toast({
@@ -27,21 +34,128 @@ export default function Integrations() {
 
     setIsConnecting(true);
     try {
-      // TODO: Implement Google Places API integration
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-      
-      toast({
-        title: "Google Reviews Connected",
-        description: "Successfully connected to Google Places API",
+      // Store credentials securely
+      const storeResult = await IntegrationService.storeApiCredentials('google', {
+        api_key: googleApiKey,
+        place_id: googlePlaceId
       });
+
+      if (!storeResult.success) {
+        throw new Error(storeResult.error || 'Failed to store credentials');
+      }
+
+      // Fetch reviews from Google Places API
+      const result = await IntegrationService.fetchGoogleReviews(googleApiKey, googlePlaceId);
+      
+      if (result.success) {
+        toast({
+          title: "Google Reviews Imported",
+          description: `Successfully imported ${result.count} reviews from Google Places`,
+        });
+        
+        // Refresh reviews data
+        fetchReviews();
+        
+        // Clear the form
+        setGoogleApiKey('');
+        setGooglePlaceId('');
+      } else {
+        throw new Error(result.error || 'Failed to fetch reviews');
+      }
     } catch (error) {
       toast({
         title: "Connection Failed",
-        description: "Failed to connect to Google Places API",
+        description: error instanceof Error ? error.message : "Failed to connect to Google Places API",
         variant: "destructive",
       });
     } finally {
       setIsConnecting(false);
+    }
+  };
+
+  // Handle Booking.com CSV import
+  const handleBookingImport = async () => {
+    const file = bookingFileRef.current?.files?.[0];
+    if (!file) {
+      toast({
+        title: "No File Selected",
+        description: "Please select a CSV file to import",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      const result = await IntegrationService.importCsvReviews(file, 'booking');
+      
+      if (result.success) {
+        toast({
+          title: "Booking.com Reviews Imported",
+          description: `Successfully imported ${result.count} reviews from CSV`,
+        });
+        
+        // Refresh reviews data
+        fetchReviews();
+        
+        // Clear the file input
+        if (bookingFileRef.current) {
+          bookingFileRef.current.value = '';
+        }
+      } else {
+        throw new Error(result.error || 'Failed to import CSV');
+      }
+    } catch (error) {
+      toast({
+        title: "Import Failed",
+        description: error instanceof Error ? error.message : "Failed to import CSV file",
+        variant: "destructive",
+      });
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  // Handle Airbnb CSV import
+  const handleAirbnbImport = async () => {
+    const file = airbnbFileRef.current?.files?.[0];
+    if (!file) {
+      toast({
+        title: "No File Selected",
+        description: "Please select a CSV file to import",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      const result = await IntegrationService.importCsvReviews(file, 'airbnb');
+      
+      if (result.success) {
+        toast({
+          title: "Airbnb Reviews Imported",
+          description: `Successfully imported ${result.count} reviews from CSV`,
+        });
+        
+        // Refresh reviews data
+        fetchReviews();
+        
+        // Clear the file input
+        if (airbnbFileRef.current) {
+          airbnbFileRef.current.value = '';
+        }
+      } else {
+        throw new Error(result.error || 'Failed to import CSV');
+      }
+    } catch (error) {
+      toast({
+        title: "Import Failed",
+        description: error instanceof Error ? error.message : "Failed to import CSV file",
+        variant: "destructive",
+      });
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -106,7 +220,17 @@ export default function Integrations() {
             disabled={isConnecting}
             className="w-full"
           >
-            {isConnecting ? 'Connecting...' : 'Connect Google Reviews'}
+            {isConnecting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Fetching Reviews...
+              </>
+            ) : (
+              <>
+                <Globe className="w-4 h-4 mr-2" />
+                Fetch Google Reviews
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>
@@ -138,18 +262,33 @@ export default function Integrations() {
             <Label htmlFor="booking-csv">Upload Booking.com Reviews (CSV)</Label>
             <Input
               id="booking-csv"
+              ref={bookingFileRef}
               type="file"
               accept=".csv"
               className="cursor-pointer"
             />
             <p className="text-xs text-muted-foreground">
-              Expected format: Guest Name, Date, Rating, Review Text
+              Expected format: guest_name, date, rating, review_text
             </p>
           </div>
 
-          <Button variant="outline" className="w-full">
-            <Upload className="w-4 h-4 mr-2" />
-            Import CSV File
+          <Button 
+            variant="outline" 
+            className="w-full"
+            onClick={handleBookingImport}
+            disabled={isImporting}
+          >
+            {isImporting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Importing...
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4 mr-2" />
+                Import CSV File
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>
@@ -181,15 +320,33 @@ export default function Integrations() {
             <Label htmlFor="airbnb-csv">Upload Airbnb Reviews (CSV)</Label>
             <Input
               id="airbnb-csv"
+              ref={airbnbFileRef}
               type="file"
               accept=".csv"
               className="cursor-pointer"
             />
+            <p className="text-xs text-muted-foreground">
+              Expected format: guest_name, date, rating, review_text
+            </p>
           </div>
 
-          <Button variant="outline" className="w-full">
-            <Upload className="w-4 h-4 mr-2" />
-            Import CSV File
+          <Button 
+            variant="outline" 
+            className="w-full"
+            onClick={handleAirbnbImport}
+            disabled={isImporting}
+          >
+            {isImporting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Importing...
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4 mr-2" />
+                Import CSV File
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>
