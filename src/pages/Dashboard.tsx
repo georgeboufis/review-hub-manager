@@ -1,31 +1,39 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { mockReviews, analyticsData } from '@/data/mockData';
+import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
 import ReviewCard from '@/components/ReviewCard';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAnalytics, useReviews } from '@/hooks/useReviews';
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function Dashboard() {
   const { t } = useLanguage();
-  const totalReviews = mockReviews.length;
-  const averageRating = (mockReviews.reduce((acc, review) => acc + review.rating, 0) / totalReviews).toFixed(1);
-  const pendingReplies = mockReviews.filter(review => !review.replied).length;
-  
-  const platformCounts = {
-    booking: mockReviews.filter(r => r.platform === 'booking').length,
-    airbnb: mockReviews.filter(r => r.platform === 'airbnb').length,
-    google: mockReviews.filter(r => r.platform === 'google').length,
-    tripadvisor: mockReviews.filter(r => r.platform === 'tripadvisor').length,
-  };
+  const { analytics, loading: analyticsLoading } = useAnalytics();
+  const { initializeDummyData } = useReviews();
 
-  const recentReviews = mockReviews.slice(0, 3);
+  // Initialize dummy data for new users on first load
+  useEffect(() => {
+    initializeDummyData();
+  }, [initializeDummyData]);
+
+  const { totalReviews, averageRating, pendingReplies, platformDistribution, recentReviews } = analytics;
+
+  // Calculate platform counts from distribution
+  const platformCounts = {
+    booking: platformDistribution.booking || 0,
+    airbnb: platformDistribution.airbnb || 0,
+    google: platformDistribution.google || 0,
+    tripadvisor: platformDistribution.tripadvisor || 0,
+  };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
         className={`h-5 w-5 ${
-          i < Math.floor(parseFloat(rating.toString())) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+          i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
         }`}
       />
     ));
@@ -56,8 +64,8 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-primary">{averageRating}</div>
-              <div className="flex">{renderStars(parseFloat(averageRating))}</div>
+              <div className="text-2xl font-bold text-primary">{averageRating.toFixed(1)}</div>
+              <div className="flex">{renderStars(averageRating)}</div>
             </div>
             <p className="text-xs text-muted-foreground">Overall performance</p>
           </CardContent>
@@ -114,10 +122,21 @@ export default function Dashboard() {
       {/* Recent Reviews */}
       <div>
         <h2 className="text-2xl font-bold text-foreground mb-6">{t('recent_reviews')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recentReviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
-          ))}
+        <div className="grid gap-6">
+          {analyticsLoading ? (
+            <div className="text-center py-8 text-muted-foreground">Loading reviews...</div>
+          ) : recentReviews.length > 0 ? (
+            recentReviews.map((review) => (
+              <ReviewCard key={review.id} review={review} />
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">No reviews yet. Start by adding some dummy data or create your first review!</p>
+              <Link to="/reviews">
+                <Button variant="professional">{t('view_all_reviews')}</Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -4,14 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { mockReviews } from '@/data/mockData';
-import { Star } from 'lucide-react';
+import { Star, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ReviewsService, Review } from '@/services/reviewsService';
+import { useReviews } from '@/hooks/useReviews';
 
 const platformLabels = {
   booking: 'Booking.com',
   airbnb: 'Airbnb',
-  google: 'Google',
+  google: 'Google Reviews',
   tripadvisor: 'TripAdvisor'
 };
 
@@ -26,22 +27,53 @@ export default function ReplyPage() {
   const { reviewId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { updateReviewReply } = useReviews();
+  const [review, setReview] = useState<Review | null>(null);
   const [replyText, setReplyText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const review = mockReviews.find(r => r.id === reviewId);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (review?.replied && review.replyText) {
-      setReplyText(review.replyText);
-    }
-  }, [review]);
+    const fetchReview = async () => {
+      if (!reviewId) return;
+      
+      setLoading(true);
+      const { data, error } = await ReviewsService.getReviewById(reviewId);
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load review",
+          variant: "destructive",
+        });
+        navigate('/reviews');
+        return;
+      }
+      
+      if (data) {
+        setReview(data);
+        setReplyText(data.reply_text || '');
+      }
+      setLoading(false);
+    };
+
+    fetchReview();
+  }, [reviewId, navigate, toast]);
+
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-lg text-primary">Loading review...</div>
+      </div>
+    );
+  }
 
   if (!review) {
     return (
       <div className="text-center py-12">
         <h1 className="text-2xl font-bold text-foreground mb-4">Review Not Found</h1>
         <Button onClick={() => navigate('/reviews')}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Reviews
         </Button>
       </div>
@@ -73,22 +105,30 @@ export default function ReplyPage() {
 
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const { success, error } = await updateReviewReply(review.id, replyText);
     
-    toast({
-      title: "Reply sent successfully!",
-      description: `Your reply to ${review.guestName} has been posted on ${platformLabels[review.platform]}.`,
-    });
+    if (success) {
+      toast({
+        title: "Reply sent successfully!",
+        description: `Your reply to ${review.guest_name} has been posted on ${platformLabels[review.platform as keyof typeof platformLabels]}.`,
+      });
+      navigate('/reviews');
+    } else {
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to send reply. Please try again.",
+        variant: "destructive",
+      });
+    }
     
     setIsSubmitting(false);
-    navigate('/reviews');
   };
 
   const suggestedReplies = [
     "Thank you so much for your wonderful review! We're delighted you enjoyed your stay and look forward to welcoming you back.",
     "We appreciate your feedback and are glad you had a positive experience. Thank you for choosing to stay with us!",
     "Thank you for taking the time to leave this review. We're sorry to hear about the issues you experienced and will address them immediately.",
+    "We're thrilled to hear you had such a great experience! Your feedback means the world to us.",
   ];
 
   return (
@@ -98,6 +138,7 @@ export default function ReplyPage() {
           {review.replied ? 'Edit Reply' : 'Reply to Review'}
         </h1>
         <Button variant="outline" onClick={() => navigate('/reviews')}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Reviews
         </Button>
       </div>
@@ -107,10 +148,9 @@ export default function ReplyPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Badge className={`${platformColors[review.platform]} text-white`}>
-                {platformLabels[review.platform]}
+              <Badge className={`${platformColors[review.platform as keyof typeof platformColors]} text-white`}>
+                {platformLabels[review.platform as keyof typeof platformLabels]}
               </Badge>
-              <span className="text-sm text-muted-foreground">{review.propertyName}</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="flex">{renderStars(review.rating)}</div>
@@ -119,13 +159,20 @@ export default function ReplyPage() {
           </div>
           
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span className="font-medium text-lg text-foreground">{review.guestName}</span>
+            <span className="font-medium text-lg text-foreground">{review.guest_name}</span>
             <span>{formatDate(review.date)}</span>
           </div>
         </CardHeader>
         
         <CardContent>
-          <p className="text-gray-700 leading-relaxed">{review.text}</p>
+          <p className="text-gray-700 leading-relaxed">{review.review_text}</p>
+          
+          {review.replied && review.reply_text && (
+            <div className="mt-4 p-4 bg-primary-50 rounded-lg">
+              <p className="text-sm font-medium text-primary mb-2">Current Reply:</p>
+              <p className="text-sm text-gray-700">{review.reply_text}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -133,7 +180,7 @@ export default function ReplyPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Your Reply</CardTitle>
+            <CardTitle>{review.replied ? 'Edit Your Reply' : 'Your Reply'}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Textarea
@@ -150,7 +197,7 @@ export default function ReplyPage() {
 
             <div className="flex justify-between items-center">
               <div className="text-sm text-muted-foreground">
-                This reply will be posted publicly on {platformLabels[review.platform]}
+                This reply will be posted publicly on {platformLabels[review.platform as keyof typeof platformLabels]}
               </div>
               <div className="space-x-2">
                 <Button 

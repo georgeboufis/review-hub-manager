@@ -1,9 +1,9 @@
-import { Review } from '@/data/mockData';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Review } from '@/services/reviewsService';
 
 interface ReviewCardProps {
   review: Review;
@@ -19,7 +19,7 @@ const platformColors = {
 const platformLabels = {
   booking: 'Booking.com',
   airbnb: 'Airbnb',
-  google: 'Google',
+  google: 'Google Reviews',
   tripadvisor: 'TripAdvisor'
 };
 
@@ -48,10 +48,9 @@ export default function ReviewCard({ review }: ReviewCardProps) {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Badge className={`${platformColors[review.platform]} text-white`}>
-              {platformLabels[review.platform]}
+            <Badge className={`${platformColors[review.platform as keyof typeof platformColors]} text-white`}>
+              {platformLabels[review.platform as keyof typeof platformLabels]}
             </Badge>
-            <span className="text-sm text-muted-foreground">{review.propertyName}</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="flex">{renderStars(review.rating)}</div>
@@ -60,18 +59,18 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         </div>
         
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span className="font-medium">{review.guestName}</span>
+          <span className="font-medium">{review.guest_name}</span>
           <span>{formatDate(review.date)}</span>
         </div>
       </CardHeader>
       
       <CardContent>
-        <p className="text-sm text-gray-700 mb-4 line-clamp-3">{review.text}</p>
+        <p className="text-sm text-gray-700 mb-4 line-clamp-3">{review.review_text}</p>
         
-        {review.replied && review.replyText && (
+        {review.replied && review.reply_text && (
           <div className="bg-primary-50 rounded-lg p-3 mb-3">
             <p className="text-xs font-medium text-primary mb-1">Your Reply:</p>
-            <p className="text-sm text-gray-700">{review.replyText}</p>
+            <p className="text-sm text-gray-700">{review.reply_text}</p>
           </div>
         )}
         
@@ -80,13 +79,11 @@ export default function ReviewCard({ review }: ReviewCardProps) {
             {review.replied ? 'Replied' : 'Needs Reply'}
           </Badge>
           
-          {!review.replied && (
-            <Link to={`/reply/${review.id}`}>
-              <Button size="sm" variant="professional">
-                Reply
-              </Button>
-            </Link>
-          )}
+          <Link to={`/reply/${review.id}`}>
+            <Button size="sm" variant={review.replied ? "outline" : "professional"}>
+              {review.replied ? 'Edit Reply' : 'Reply'}
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

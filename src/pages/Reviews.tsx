@@ -3,20 +3,21 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { mockReviews } from '@/data/mockData';
 import ReviewCard from '@/components/ReviewCard';
 import { Search } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useReviews } from '@/hooks/useReviews';
 
 export default function Reviews() {
   const { t } = useLanguage();
+  const { reviews, loading, error } = useReviews();
   const [searchTerm, setSearchTerm] = useState('');
   const [platformFilter, setPlatformFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
 
-  const filteredReviews = mockReviews.filter(review => {
-    const matchesSearch = review.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         review.guestName.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredReviews = reviews.filter(review => {
+    const matchesSearch = review.review_text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         review.guest_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPlatform = platformFilter === 'all' || review.platform === platformFilter;
     const matchesRating = ratingFilter === 'all' || 
                          (ratingFilter === 'high' && review.rating >= 4) ||
@@ -26,11 +27,13 @@ export default function Reviews() {
     return matchesSearch && matchesPlatform && matchesRating;
   });
 
+  const pendingCount = reviews.filter(review => !review.replied).length;
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">All Reviews</h1>
-        <p className="text-muted-foreground mt-2">Manage and respond to guest reviews from all platforms.</p>
+        <h1 className="text-3xl font-bold text-foreground">{t('reviews_title')}</h1>
+        <p className="text-muted-foreground mt-2">{t('reviews_subtitle')}</p>
       </div>
 
       {/* Filters */}
@@ -48,23 +51,23 @@ export default function Reviews() {
           
           <Select value={platformFilter} onValueChange={setPlatformFilter}>
             <SelectTrigger>
-              <SelectValue placeholder="Filter by platform" />
+              <SelectValue placeholder={t('filter_by_platform')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Platforms</SelectItem>
+              <SelectItem value="all">{t('all_platforms')}</SelectItem>
               <SelectItem value="booking">Booking.com</SelectItem>
               <SelectItem value="airbnb">Airbnb</SelectItem>
-              <SelectItem value="google">Google</SelectItem>
+              <SelectItem value="google">Google Reviews</SelectItem>
               <SelectItem value="tripadvisor">TripAdvisor</SelectItem>
             </SelectContent>
           </Select>
           
           <Select value={ratingFilter} onValueChange={setRatingFilter}>
             <SelectTrigger>
-              <SelectValue placeholder="Filter by rating" />
+              <SelectValue placeholder={t('filter_by_rating')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Ratings</SelectItem>
+              <SelectItem value="all">{t('all_ratings')}</SelectItem>
               <SelectItem value="high">4-5 Stars</SelectItem>
               <SelectItem value="medium">3 Stars</SelectItem>
               <SelectItem value="low">1-2 Stars</SelectItem>
@@ -94,36 +97,49 @@ export default function Reviews() {
       {/* Results Summary */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {filteredReviews.length} of {mockReviews.length} reviews
+          Showing {filteredReviews.length} of {reviews.length} reviews
         </p>
-        <Button variant="professional">
-          Export Reviews
-        </Button>
+        {pendingCount > 0 && (
+          <Badge variant="outline" className="text-orange-600 border-orange-600">
+            {pendingCount} pending replies
+          </Badge>
+        )}
       </div>
 
-      {/* Reviews Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredReviews.map((review) => (
-          <ReviewCard key={review.id} review={review} />
-        ))}
+      {/* Reviews List */}
+      <div className="space-y-6">
+        {loading ? (
+          <div className="text-center py-8 text-muted-foreground">Loading reviews...</div>
+        ) : error ? (
+          <div className="text-center py-8 text-red-600">Error: {error}</div>
+        ) : filteredReviews.length > 0 ? (
+          <div className="grid gap-6">
+            {filteredReviews.map((review) => (
+              <ReviewCard key={review.id} review={review} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground mb-4">
+              {searchTerm || platformFilter !== 'all' || ratingFilter !== 'all' 
+                ? 'No reviews match your current filters.' 
+                : 'No reviews yet. Your reviews will appear here once you receive them.'}
+            </p>
+            {(searchTerm || platformFilter !== 'all' || ratingFilter !== 'all') && (
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSearchTerm('');
+                  setPlatformFilter('all');
+                  setRatingFilter('all');
+                }}
+              >
+                Clear Filters
+              </Button>
+            )}
+          </div>
+        )}
       </div>
-
-      {filteredReviews.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No reviews found matching your criteria.</p>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setSearchTerm('');
-              setPlatformFilter('all');
-              setRatingFilter('all');
-            }}
-            className="mt-4"
-          >
-            Clear Filters
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
