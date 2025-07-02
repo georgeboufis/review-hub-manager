@@ -1,6 +1,8 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
@@ -11,6 +13,24 @@ const navigation = [
 
 export default function Layout() {
   const location = useLocation();
+  const { signOut, user } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error signing out",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out.",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent">
@@ -39,8 +59,11 @@ export default function Layout() {
             </nav>
 
             <div className="flex items-center space-x-4">
-              <Button variant="elegant" size="sm">
-                Profile
+              <span className="text-sm text-muted-foreground">
+                Welcome, {user?.email}
+              </span>
+              <Button variant="elegant" size="sm" onClick={handleSignOut}>
+                Sign Out
               </Button>
             </div>
           </div>
