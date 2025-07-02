@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ReviewCard from '@/components/ReviewCard';
 import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useReviews } from '@/hooks/useReviews';
 
@@ -85,62 +87,78 @@ export default function Reviews() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-soft p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder={t('search_reviews')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+      <Card className="bg-gradient-to-r from-background to-accent/10">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder={t('search_reviews')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-11"
+              />
+            </div>
+            
+            <Select value={platformFilter} onValueChange={setPlatformFilter}>
+              <SelectTrigger className="h-11">
+                <SelectValue placeholder={t('filter_by_platform')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('all_platforms')}</SelectItem>
+                <SelectItem value="booking">Booking.com</SelectItem>
+                <SelectItem value="airbnb">Airbnb</SelectItem>
+                <SelectItem value="google">Google Reviews</SelectItem>
+                <SelectItem value="tripadvisor">TripAdvisor</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={ratingFilter} onValueChange={setRatingFilter}>
+              <SelectTrigger className="h-11">
+                <SelectValue placeholder={t('filter_by_rating')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('all_ratings')}</SelectItem>
+                <SelectItem value="high">4-5 Stars</SelectItem>
+                <SelectItem value="medium">3 Stars</SelectItem>
+                <SelectItem value="low">1-2 Stars</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
-          <Select value={platformFilter} onValueChange={setPlatformFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder={t('filter_by_platform')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('all_platforms')}</SelectItem>
-              <SelectItem value="booking">Booking.com</SelectItem>
-              <SelectItem value="airbnb">Airbnb</SelectItem>
-              <SelectItem value="google">Google Reviews</SelectItem>
-              <SelectItem value="tripadvisor">TripAdvisor</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={ratingFilter} onValueChange={setRatingFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder={t('filter_by_rating')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('all_ratings')}</SelectItem>
-              <SelectItem value="high">4-5 Stars</SelectItem>
-              <SelectItem value="medium">3 Stars</SelectItem>
-              <SelectItem value="low">1-2 Stars</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="flex flex-wrap gap-2 mt-4">
-          {platformFilter !== 'all' && (
-            <Badge variant="secondary" className="cursor-pointer" onClick={() => setPlatformFilter('all')}>
-              Platform: {platformFilter} ×
-            </Badge>
+          {(platformFilter !== 'all' || ratingFilter !== 'all' || searchTerm) && (
+            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
+              {platformFilter !== 'all' && (
+                <Badge 
+                  variant="secondary" 
+                  className="cursor-pointer hover:bg-secondary/80 transition-colors" 
+                  onClick={() => setPlatformFilter('all')}
+                >
+                  Platform: {platformFilter} ×
+                </Badge>
+              )}
+              {ratingFilter !== 'all' && (
+                <Badge 
+                  variant="secondary" 
+                  className="cursor-pointer hover:bg-secondary/80 transition-colors" 
+                  onClick={() => setRatingFilter('all')}
+                >
+                  Rating: {ratingFilter} ×
+                </Badge>
+              )}
+              {searchTerm && (
+                <Badge 
+                  variant="secondary" 
+                  className="cursor-pointer hover:bg-secondary/80 transition-colors" 
+                  onClick={() => setSearchTerm('')}
+                >
+                  Search: "{searchTerm}" ×
+                </Badge>
+              )}
+            </div>
           )}
-          {ratingFilter !== 'all' && (
-            <Badge variant="secondary" className="cursor-pointer" onClick={() => setRatingFilter('all')}>
-              Rating: {ratingFilter} ×
-            </Badge>
-          )}
-          {searchTerm && (
-            <Badge variant="secondary" className="cursor-pointer" onClick={() => setSearchTerm('')}>
-              Search: "{searchTerm}" ×
-            </Badge>
-          )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Results Summary */}
       <div className="flex items-center justify-between">
@@ -157,35 +175,64 @@ export default function Reviews() {
       {/* Reviews List */}
       <div className="space-y-6">
         {loading ? (
-          <div className="text-center py-8 text-muted-foreground">Loading reviews...</div>
+          <div className="space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="loading-skeleton h-40 w-full rounded-lg"></div>
+            ))}
+          </div>
         ) : error ? (
-          <div className="text-center py-8 text-red-600">Error: {error}</div>
+          <Card className="border-destructive bg-destructive/5">
+            <CardContent className="text-center py-12">
+              <div className="text-destructive text-4xl mb-4">⚠️</div>
+              <h3 className="text-lg font-semibold text-destructive mb-2">Error Loading Reviews</h3>
+              <p className="text-sm text-muted-foreground">{error}</p>
+            </CardContent>
+          </Card>
         ) : filteredReviews.length > 0 ? (
-          <div className="grid gap-6">
+          <div className="space-y-4">
             {filteredReviews.map((review) => (
               <ReviewCard key={review.id} review={review} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">
-              {searchTerm || platformFilter !== 'all' || ratingFilter !== 'all' 
-                ? 'No reviews match your current filters.' 
-                : 'No reviews yet. Your reviews will appear here once you receive them.'}
-            </p>
-            {(searchTerm || platformFilter !== 'all' || ratingFilter !== 'all') && (
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setSearchTerm('');
-                  setPlatformFilter('all');
-                  setRatingFilter('all');
-                }}
-              >
-                Clear Filters
-              </Button>
-            )}
-          </div>
+          <Card className="bg-gradient-to-br from-muted/20 to-muted/10 border-dashed">
+            <CardContent className="text-center py-16">
+              <div className="text-muted-foreground text-6xl mb-4">
+                {searchTerm || platformFilter !== 'all' || ratingFilter !== 'all' ? '🔍' : '📝'}
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                {searchTerm || platformFilter !== 'all' || ratingFilter !== 'all' 
+                  ? 'No reviews match your filters' 
+                  : 'No reviews yet'}
+              </h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                {searchTerm || platformFilter !== 'all' || ratingFilter !== 'all' 
+                  ? 'Try adjusting your search terms or filters to see more results.' 
+                  : 'Your reviews will appear here once you import them from your platforms.'}
+              </p>
+              {(searchTerm || platformFilter !== 'all' || ratingFilter !== 'all') ? (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setPlatformFilter('all');
+                    setRatingFilter('all');
+                  }}
+                >
+                  Clear All Filters
+                </Button>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link to="/integrations">
+                    <Button variant="professional">Import Reviews</Button>
+                  </Link>
+                  <Button variant="outline" onClick={createTestReview}>
+                    Create Test Review
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

@@ -53,6 +53,11 @@ All colors MUST be HSL.
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Interactive states */
+    --hover-overlay: rgba(0, 0, 0, 0.02);
+    --focus-ring: 0 0 0 2px hsl(var(--primary) / 0.3);
 
     --radius: 0.5rem;
 
@@ -118,6 +123,34 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  
+  /* Enhanced focus styles */
+  *:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  
+  /* Better text rendering */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Enhanced loading states */
+  .loading-skeleton {
+    @apply bg-muted animate-pulse rounded-md;
+  }
+  
+  /* Improved interactive elements */
+  .interactive-card {
+    @apply transition-all duration-200 hover:shadow-md hover:scale-[1.01] cursor-pointer;
+  }
+  
+  /* Better mobile touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
   }
 }

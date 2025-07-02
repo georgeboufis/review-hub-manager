@@ -69,31 +69,31 @@ export default function Layout() {
     }
   };
   
-  return <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent">
-      <header className="bg-white shadow-soft border-b">
+  return <div className="min-h-screen bg-gradient-to-br from-primary-50 via-background to-accent/20">
+      <header className="bg-white/95 backdrop-blur-sm shadow-elegant border-b border-border/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-2">
+          <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <h1 className="text-xl font-bold text-primary">{t('guest_review_manager')}</h1>
             </div>
             
-            <div className="flex items-center space-x-6">
-              <span className="text-sm text-muted-foreground">
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-muted-foreground hidden sm:block">
                 {user?.email}
               </span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
+                  <Button variant="outline" size="sm" className="gap-2 min-w-[120px]">
                     <span>{selectedLanguage.flag}</span>
-                    <span>{selectedLanguage.name}</span>
+                    <span className="hidden sm:inline">{selectedLanguage.name}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="bg-background border shadow-lg">
                   {languages.map((language) => (
                     <DropdownMenuItem
                       key={language.code}
                       onClick={() => handleLanguageChange(language)}
-                      className="gap-2"
+                      className="gap-2 cursor-pointer"
                     >
                       <span>{language.flag}</span>
                       <span>{language.name}</span>
@@ -103,24 +103,34 @@ export default function Layout() {
               </DropdownMenu>
               
               <Button variant="elegant" size="sm" onClick={handleSignOut}>
-                {t('sign_out')}
+                <span className="hidden sm:inline">{t('sign_out')}</span>
+                <span className="sm:hidden">Sign Out</span>
               </Button>
             </div>
           </div>
           
-          <div className="border-t border-border/40 py-2">
-            <div className="flex flex-col space-y-3">
-              <nav className="flex justify-between w-full">
-                {navigation.map(item => <Link key={item.name} to={item.href} className={cn('text-sm font-medium transition-colors px-4 py-2 rounded-md', location.pathname === item.href ? 'text-primary bg-primary-50' : 'text-muted-foreground hover:text-primary hover:bg-primary-50')}>
-                    {item.name}
-                  </Link>)}
-              </nav>
-            </div>
+          <div className="border-t border-border/40 py-3">
+            <nav className="flex flex-wrap gap-2 sm:justify-between">
+              {navigation.map(item => (
+                <Link 
+                  key={item.name} 
+                  to={item.href} 
+                  className={cn(
+                    'text-sm font-medium transition-all duration-200 px-3 py-2 rounded-md touch-target whitespace-nowrap',
+                    location.pathname === item.href 
+                      ? 'text-primary bg-primary-50 border border-primary/20 shadow-sm' 
+                      : 'text-muted-foreground hover:text-primary hover:bg-primary-50/50'
+                  )}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         <Outlet />
       </main>
     </div>;

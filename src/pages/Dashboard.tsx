@@ -59,95 +59,116 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('total_reviews')}</CardTitle>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 border-blue-200">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-blue-900">{t('total_reviews')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{totalReviews}</div>
-            <p className="text-xs text-muted-foreground">Across all platforms</p>
+            <div className="text-3xl font-bold text-blue-600 mb-1">{totalReviews}</div>
+            <p className="text-xs text-blue-700/80">Across all platforms</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('average_rating')}</CardTitle>
+        <Card className="bg-gradient-to-br from-green-50 to-green-100/50 border-green-200">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-green-900">{t('average_rating')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-2">
-              <div className="text-2xl font-bold text-primary">{averageRating.toFixed(1)}</div>
+            <div className="flex items-center space-x-3 mb-1">
+              <div className="text-3xl font-bold text-green-600">{averageRating.toFixed(1)}</div>
               <div className="flex">{renderStars(averageRating)}</div>
             </div>
-            <p className="text-xs text-muted-foreground">Overall performance</p>
+            <p className="text-xs text-green-700/80">Overall performance</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('pending_replies')}</CardTitle>
+        <Card className="bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-200">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-orange-900">{t('pending_replies')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{pendingReplies}</div>
-            <p className="text-xs text-muted-foreground">Need your attention</p>
+            <div className="text-3xl font-bold text-orange-600 mb-1">{pendingReplies}</div>
+            <p className="text-xs text-orange-700/80">Need your attention</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">This Month</CardTitle>
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100/50 border-purple-200">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-purple-900">This Month</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">+{Math.floor(totalReviews * 0.3)}</div>
-            <p className="text-xs text-muted-foreground">New reviews</p>
+            <div className="text-3xl font-bold text-purple-600 mb-1">+{Math.floor(totalReviews * 0.3)}</div>
+            <p className="text-xs text-purple-700/80">New reviews</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Platform Breakdown */}
-      <Card>
+      <Card className="bg-gradient-to-r from-background to-accent/20">
         <CardHeader>
-          <CardTitle>{t('platform_distribution')}</CardTitle>
+          <CardTitle className="text-lg">{t('platform_distribution')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{platformCounts.booking}</div>
-              <Badge className="bg-blue-500 text-white">Booking.com</Badge>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="text-3xl font-bold text-blue-600 mb-2">{platformCounts.booking}</div>
+              <Badge className="bg-blue-600 text-white px-3 py-1">Booking.com</Badge>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">{platformCounts.airbnb}</div>
-              <Badge className="bg-red-500 text-white">Airbnb</Badge>
+            <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+              <div className="text-3xl font-bold text-red-600 mb-2">{platformCounts.airbnb}</div>
+              <Badge className="bg-red-600 text-white px-3 py-1">Airbnb</Badge>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{platformCounts.google}</div>
-              <Badge className="bg-green-500 text-white">Google</Badge>
+            <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="text-3xl font-bold text-green-600 mb-2">{platformCounts.google}</div>
+              <Badge className="bg-green-600 text-white px-3 py-1">Google</Badge>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">{platformCounts.tripadvisor}</div>
-              <Badge className="bg-orange-500 text-white">TripAdvisor</Badge>
+            <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+              <div className="text-3xl font-bold text-orange-600 mb-2">{platformCounts.tripadvisor}</div>
+              <Badge className="bg-orange-600 text-white px-3 py-1">TripAdvisor</Badge>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Recent Reviews */}
-      <div>
-        <h2 className="text-2xl font-bold text-foreground mb-6">{t('recent_reviews')}</h2>
-        <div className="grid gap-6">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">{t('recent_reviews')}</h2>
+          <Link to="/reviews">
+            <Button variant="outline" size="sm">View All</Button>
+          </Link>
+        </div>
+        
+        <div className="space-y-4">
           {analyticsLoading ? (
-            <div className="text-center py-8 text-muted-foreground">Loading reviews...</div>
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="loading-skeleton h-32 w-full"></div>
+              ))}
+            </div>
           ) : recentReviews.length > 0 ? (
             recentReviews.map((review) => (
               <ReviewCard key={review.id} review={review} />
             ))
           ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">No reviews yet. Start by adding some dummy data or create your first review!</p>
-              <Link to="/reviews">
-                <Button variant="professional">{t('view_all_reviews')}</Button>
-              </Link>
-            </div>
+            <Card className="bg-gradient-to-br from-muted/20 to-muted/10 border-dashed">
+              <CardContent className="text-center py-12">
+                <div className="text-muted-foreground text-6xl mb-4">📝</div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">No reviews yet</h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  Start by adding some dummy data or create your first review to see them here!
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link to="/reviews">
+                    <Button variant="professional">{t('view_all_reviews')}</Button>
+                  </Link>
+                  <Link to="/integrations">
+                    <Button variant="outline">Add Reviews</Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>

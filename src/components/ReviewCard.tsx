@@ -10,10 +10,10 @@ interface ReviewCardProps {
 }
 
 const platformColors = {
-  booking: 'bg-blue-500',
-  airbnb: 'bg-red-500',
-  google: 'bg-green-500',
-  tripadvisor: 'bg-orange-500'
+  booking: 'bg-blue-600 text-white',
+  airbnb: 'bg-red-600 text-white', 
+  google: 'bg-green-600 text-white',
+  tripadvisor: 'bg-orange-600 text-white'
 };
 
 const platformLabels = {
@@ -44,43 +44,52 @@ export default function ReviewCard({ review }: ReviewCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Badge className={`${platformColors[review.platform as keyof typeof platformColors]} text-white`}>
+    <Card className="interactive-card border-border hover:border-primary/30 transition-all duration-200 bg-card">
+      <CardHeader className="pb-4 space-y-3">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Badge className={platformColors[review.platform as keyof typeof platformColors]}>
               {platformLabels[review.platform as keyof typeof platformLabels]}
             </Badge>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <div className="flex">{renderStars(review.rating)}</div>
-            <span className="text-sm font-medium">{review.rating}/5</span>
+            <span className="text-sm font-semibold text-foreground">{review.rating}/5</span>
           </div>
         </div>
         
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span className="font-medium">{review.guest_name}</span>
-          <span>{formatDate(review.date)}</span>
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium text-foreground">{review.guest_name}</span>
+          <span className="text-muted-foreground">{formatDate(review.date)}</span>
         </div>
       </CardHeader>
       
-      <CardContent>
-        <p className="text-sm text-gray-700 mb-4 line-clamp-3">{review.review_text}</p>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-foreground leading-relaxed line-clamp-3">
+          {review.review_text}
+        </p>
         
         {review.replied && review.reply_text && (
-          <div className="bg-primary-50 rounded-lg p-3 mb-3">
-            <p className="text-xs font-medium text-primary mb-1">Your Reply:</p>
-            <p className="text-sm text-gray-700">{review.reply_text}</p>
+          <div className="bg-primary-50 border border-primary-100 rounded-lg p-3">
+            <p className="text-xs font-semibold text-primary mb-2">Your Reply:</p>
+            <p className="text-sm text-foreground leading-relaxed">{review.reply_text}</p>
           </div>
         )}
         
-        <div className="flex items-center justify-between">
-          <Badge variant={review.replied ? "secondary" : "outline"}>
+        <div className="flex items-center justify-between pt-2">
+          <Badge 
+            variant={review.replied ? "secondary" : "outline"}
+            className={review.replied ? "bg-green-50 text-green-700 border-green-200" : "bg-orange-50 text-orange-700 border-orange-200"}
+          >
             {review.replied ? 'Replied' : 'Needs Reply'}
           </Badge>
           
           <Link to={`/reply/${review.id}`}>
-            <Button size="sm" variant={review.replied ? "outline" : "professional"}>
+            <Button 
+              size="sm" 
+              variant={review.replied ? "outline" : "professional"}
+              className="min-w-[80px]"
+            >
               {review.replied ? 'Edit Reply' : 'Reply'}
             </Button>
           </Link>
