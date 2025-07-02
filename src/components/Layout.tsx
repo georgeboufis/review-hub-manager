@@ -96,9 +96,6 @@ export default function Layout() {
           
           <div className="border-t border-border/40 py-2">
             <div className="flex flex-col space-y-3">
-              <span className="text-sm text-muted-foreground">
-                Welcome back {user?.email}! Here's an overview of your guest reviews
-              </span>
               <nav className="flex justify-between w-full">
                 {navigation.map(item => <Link key={item.name} to={item.href} className={cn('text-sm font-medium transition-colors px-4 py-2 rounded-md', location.pathname === item.href ? 'text-primary bg-primary-50' : 'text-muted-foreground hover:text-primary hover:bg-primary-50')}>
                     {item.name}
