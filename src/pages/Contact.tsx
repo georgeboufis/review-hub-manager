@@ -5,8 +5,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     hotelName: '',
     fullName: '',
@@ -27,8 +29,8 @@ export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Message Sent",
-      description: "Thank you for contacting us. We'll get back to you soon!"
+      title: t('message_sent'),
+      description: t('message_sent_description')
     });
     // Reset form
     setFormData({
@@ -45,7 +47,7 @@ export default function Contact() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-primary mb-4">
-            Contact us for inquiries, support and partnership opportunities
+            {t('contact_title')}
           </h1>
         </div>
 
@@ -54,13 +56,13 @@ export default function Contact() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="hotelName" className="text-base font-medium text-muted-foreground">
-                  Hotel / Group Name
+                  {t('hotel_group_name')}
                 </Label>
                 <Input
                   id="hotelName"
                   name="hotelName"
                   type="text"
-                  placeholder="Enter your Hotel or Group Name"
+                  placeholder={t('enter_hotel_name')}
                   value={formData.hotelName}
                   onChange={handleInputChange}
                   className="mt-2 h-12"
@@ -70,13 +72,13 @@ export default function Contact() {
 
               <div>
                 <Label htmlFor="fullName" className="text-base font-medium text-muted-foreground">
-                  Full Name
+                  {t('full_name')}
                 </Label>
                 <Input
                   id="fullName"
                   name="fullName"
                   type="text"
-                  placeholder="Enter full name"
+                  placeholder={t('enter_full_name')}
                   value={formData.fullName}
                   onChange={handleInputChange}
                   className="mt-2 h-12"
@@ -86,13 +88,13 @@ export default function Contact() {
 
               <div>
                 <Label htmlFor="email" className="text-base font-medium text-muted-foreground">
-                  Email
+                  {t('email')}
                 </Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your work Email"
+                  placeholder={t('enter_work_email')}
                   value={formData.email}
                   onChange={handleInputChange}
                   className="mt-2 h-12"
@@ -102,13 +104,13 @@ export default function Contact() {
 
               <div>
                 <Label htmlFor="workPhone" className="text-base font-medium text-muted-foreground">
-                  Work Phone
+                  {t('work_phone')}
                 </Label>
                 <Input
                   id="workPhone"
                   name="workPhone"
                   type="tel"
-                  placeholder="Enter your work phone number"
+                  placeholder={t('enter_work_phone')}
                   value={formData.workPhone}
                   onChange={handleInputChange}
                   className="mt-2 h-12"
@@ -118,12 +120,12 @@ export default function Contact() {
 
               <div>
                 <Label htmlFor="message" className="text-base font-medium text-muted-foreground">
-                  Message
+                  {t('message')}
                 </Label>
                 <Textarea
                   id="message"
                   name="message"
-                  placeholder="Enter your message..."
+                  placeholder={t('enter_message')}
                   value={formData.message}
                   onChange={handleInputChange}
                   className="mt-2 min-h-32"
@@ -135,7 +137,7 @@ export default function Contact() {
                 type="submit" 
                 className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
               >
-                Contact Us
+                {t('contact_us')}
               </Button>
             </form>
           </CardContent>
@@ -143,7 +145,7 @@ export default function Contact() {
 
         <div className="text-center mt-16">
           <h2 className="text-3xl font-bold text-primary">
-            Reach out to our representative offices worldwide
+            {t('representative_offices')}
           </h2>
         </div>
       </div>

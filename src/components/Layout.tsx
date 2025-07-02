@@ -4,21 +4,19 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useState } from 'react';
-const navigation = [{
-  name: 'Home',
+const getNavigation = (t: (key: string) => string) => [{
+  name: t('home'),
   href: '/'
 }, {
-  name: 'Product',
-  href: '/product'
-}, {
-  name: 'Reviews',
+  name: t('reviews'),
   href: '/reviews'
 }, {
-  name: 'Settings',
+  name: t('settings'),
   href: '/settings'
 }, {
-  name: 'Contact',
+  name: t('contact'),
   href: '/contact'
 }];
 
@@ -33,7 +31,12 @@ const languages = [
 ];
 export default function Layout() {
   const location = useLocation();
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+  const { t, currentLanguage, setLanguage } = useLanguage();
+  const navigation = getNavigation(t);
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    languages.find(lang => lang.code === currentLanguage) || languages[0]
+  );
+  
   const {
     signOut,
     user
@@ -41,29 +44,36 @@ export default function Layout() {
   const {
     toast
   } = useToast();
+  
+  const handleLanguageChange = (language: typeof languages[0]) => {
+    setSelectedLanguage(language);
+    setLanguage(language.code);
+  };
+  
   const handleSignOut = async () => {
     const {
       error
     } = await signOut();
     if (error) {
       toast({
-        title: "Error signing out",
+        title: t('error_signing_out'),
         description: error.message,
         variant: "destructive"
       });
     } else {
       toast({
-        title: "Signed out successfully",
-        description: "You have been logged out."
+        title: t('signed_out_successfully'),
+        description: t('logged_out_message')
       });
     }
   };
+  
   return <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent">
       <header className="bg-white shadow-soft border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-2">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-primary">Guest Review Manager</h1>
+              <h1 className="text-xl font-bold text-primary">{t('guest_review_manager')}</h1>
             </div>
             
             <div className="flex items-center space-x-6">
@@ -81,7 +91,7 @@ export default function Layout() {
                   {languages.map((language) => (
                     <DropdownMenuItem
                       key={language.code}
-                      onClick={() => setSelectedLanguage(language)}
+                      onClick={() => handleLanguageChange(language)}
                       className="gap-2"
                     >
                       <span>{language.flag}</span>
@@ -92,7 +102,7 @@ export default function Layout() {
               </DropdownMenu>
               
               <Button variant="elegant" size="sm" onClick={handleSignOut}>
-                Sign Out
+                {t('sign_out')}
               </Button>
             </div>
           </div>
