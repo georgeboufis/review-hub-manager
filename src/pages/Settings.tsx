@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,9 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { createCheckoutSession, createCustomerPortalSession, getReviewCount } from '@/services/subscriptionService';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 const platforms = [
   {
@@ -42,12 +45,24 @@ const platforms = [
 export default function Settings() {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const { subscriptionStatus, refreshSubscription } = useAuth();
   const [notifications, setNotifications] = useState({
     newReviews: true,
     lowRatings: true,
     replyReminders: true,
     weeklyReports: false
   });
+  const [reviewCount, setReviewCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const count = await getReviewCount();
+      setReviewCount(count);
+      await refreshSubscription();
+    };
+    loadData();
+  }, [refreshSubscription]);
 
   const handleSaveSettings = () => {
     toast({
@@ -63,12 +78,120 @@ export default function Settings() {
     });
   };
 
+  const handleUpgrade = async () => {
+    setLoading(true);
+    try {
+      const { url, error } = await createCheckoutSession();
+      if (error) {
+        toast({
+          title: "Error",
+          description: error,
+          variant: "destructive",
+        });
+      } else if (url) {
+        window.open(url, '_blank');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create checkout session",
+        variant: "destructive",
+      });
+    }
+    setLoading(false);
+  };
+
+  const handleManageSubscription = async () => {
+    setLoading(true);
+    try {
+      const { url, error } = await createCustomerPortalSession();
+      if (error) {
+        toast({
+          title: "Error",
+          description: error,
+          variant: "destructive",
+        });
+      } else if (url) {
+        window.open(url, '_blank');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to open customer portal",
+        variant: "destructive",
+      });
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Settings</h1>
         <p className="text-muted-foreground mt-2">Manage your platform connections and notification preferences.</p>
       </div>
+
+      {/* Subscription Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Subscription Plan</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h3 className="font-medium">Current Plan</h3>
+                <p className="text-sm text-muted-foreground">
+                  {subscriptionStatus.subscribed ? (
+                    <>You are on the <strong>Pro Plan</strong> with unlimited reviews</>
+                  ) : (
+                    <>You are on the <strong>Free Plan</strong> ({reviewCount}/10 reviews used)</>
+                  )}
+                </p>
+                {subscriptionStatus.subscription_end && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Next billing: {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <Badge variant={subscriptionStatus.subscribed ? "secondary" : "outline"}>
+                  {subscriptionStatus.subscribed ? 'Pro Plan' : 'Free Plan'}
+                </Badge>
+                {subscriptionStatus.subscribed ? (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleManageSubscription}
+                    disabled={loading}
+                  >
+                    {loading ? <LoadingSpinner size="sm" /> : 'Manage Subscription'}
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="professional" 
+                    size="sm" 
+                    onClick={handleUpgrade}
+                    disabled={loading}
+                  >
+                    {loading ? <LoadingSpinner size="sm" /> : 'Upgrade to Pro - €29/month'}
+                  </Button>
+                )}
+              </div>
+            </div>
+            
+            {!subscriptionStatus.subscribed && reviewCount >= 10 && (
+              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <h4 className="font-medium text-yellow-800">Review Limit Reached</h4>
+                <p className="text-sm text-yellow-700 mt-1">
+                  You've reached the 10-review limit for the free plan. Upgrade to Pro for unlimited reviews.
+                </p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Platform Connections */}
       <Card>

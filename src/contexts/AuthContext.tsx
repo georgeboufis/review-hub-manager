@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { checkSubscription, SubscriptionStatus } from '@/services/subscriptionService';
 
 interface AuthContextType {
   user: User | null;
@@ -11,6 +12,8 @@ interface AuthContextType {
   signInWithApple: () => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
   loading: boolean;
+  subscriptionStatus: SubscriptionStatus;
+  refreshSubscription: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus>({ subscribed: false });
 
   useEffect(() => {
     let isMounted = true;
@@ -44,11 +48,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser(session?.user ?? null);
           setLoading(false);
           
-          // Initialize dummy data for new users after successful login
+          // Check subscription status after login
           if (event === 'SIGNED_IN' && session?.user) {
             setTimeout(() => {
-              // This will only run if user has no reviews yet
-              console.log('User signed in, checking for dummy data...');
+              refreshSubscription();
             }, 100);
           }
         }
@@ -127,6 +130,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return { error };
   };
 
+  const refreshSubscription = async () => {
+    if (user) {
+      try {
+        const status = await checkSubscription();
+        setSubscriptionStatus(status);
+      } catch (error) {
+        console.error('Error refreshing subscription:', error);
+      }
+    }
+  };
+
   const signOut = async () => {
     try {
       // Clear any local storage items
@@ -159,6 +173,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithApple,
     signOut,
     loading,
+    subscriptionStatus,
+    refreshSubscription,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
