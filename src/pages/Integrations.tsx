@@ -10,12 +10,14 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { IntegrationService } from '@/services/integrationService';
 import { useReviews } from '@/hooks/useReviews';
+import { ManualReviewForm } from '@/components/ManualReviewForm';
 
 export default function Integrations() {
   const [googleApiKey, setGoogleApiKey] = useState('');
   const [googlePlaceId, setGooglePlaceId] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isManualFormOpen, setIsManualFormOpen] = useState(false);
   const bookingFileRef = useRef<HTMLInputElement>(null);
   const airbnbFileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -366,7 +368,11 @@ export default function Integrations() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="outline" className="w-full">
+          <Button 
+            variant="outline" 
+            className="w-full"
+            onClick={() => setIsManualFormOpen(true)}
+          >
             Add Review Manually
           </Button>
         </CardContent>
@@ -395,6 +401,12 @@ export default function Integrations() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Manual Review Form Modal */}
+      <ManualReviewForm
+        open={isManualFormOpen}
+        onOpenChange={setIsManualFormOpen}
+      />
     </div>
   );
 }
