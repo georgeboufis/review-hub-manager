@@ -1,17 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star } from 'lucide-react';
+import { Star, MessageSquare } from 'lucide-react';
 import ReviewCard from '@/components/ReviewCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAnalytics, useReviews } from '@/hooks/useReviews';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import FeedbackModal from '@/components/FeedbackModal';
 
 export default function Dashboard() {
   const { t } = useLanguage();
   const { analytics, loading: analyticsLoading } = useAnalytics();
   const { initializeDummyData, reviews, loading: reviewsLoading } = useReviews();
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
   // Initialize dummy data for new users on first load
   useEffect(() => {
@@ -41,9 +43,19 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">{t('dashboard_title')}</h1>
-        <p className="text-muted-foreground mt-2">{t('dashboard_subtitle')}</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">{t('dashboard_title')}</h1>
+          <p className="text-muted-foreground mt-2">{t('dashboard_subtitle')}</p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => setFeedbackModalOpen(true)}
+          className="flex items-center gap-2"
+        >
+          <MessageSquare className="h-4 w-4" />
+          Give Feedback
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -139,6 +151,11 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      <FeedbackModal 
+        open={feedbackModalOpen} 
+        onOpenChange={setFeedbackModalOpen} 
+      />
     </div>
   );
 }
