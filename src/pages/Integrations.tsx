@@ -9,6 +9,7 @@ import { Upload, Globe, MapPin, AlertTriangle, CheckCircle, Loader2 } from 'luci
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { IntegrationService } from '@/services/integrationService';
+import { ReviewsService } from '@/services/reviewsService';
 import { useReviews } from '@/hooks/useReviews';
 import { ManualReviewForm } from '@/components/ManualReviewForm';
 
@@ -29,6 +30,17 @@ export default function Integrations() {
       toast({
         title: "Missing Information",
         description: "Please provide both API key and Place ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check review limit before importing
+    const limitCheck = await ReviewsService.canAddReview();
+    if (!limitCheck.canAdd) {
+      toast({
+        title: "Review Limit Reached",
+        description: `You've reached your ${limitCheck.limit} review limit on the Free plan. Upgrade to Pro for unlimited reviews.`,
         variant: "destructive",
       });
       return;

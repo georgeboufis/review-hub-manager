@@ -1,21 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import ReviewCard from '@/components/ReviewCard';
-import { Search } from 'lucide-react';
+import { Search, Crown, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useReviews } from '@/hooks/useReviews';
+import { useAuth } from '@/contexts/AuthContext';
+import { ReviewsService } from '@/services/reviewsService';
 
 export default function Reviews() {
   const { t } = useLanguage();
   const { reviews, loading, error, createReview } = useReviews();
+  const { subscriptionStatus } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [platformFilter, setPlatformFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
+  const [reviewLimitInfo, setReviewLimitInfo] = useState<{
+    canAdd: boolean;
+    reviewCount: number;
+    limit: number;
+    isSubscribed: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    const checkReviewLimit = async () => {
+      const result = await ReviewsService.canAddReview();
+      setReviewLimitInfo(result);
+    };
+    
+    if (!loading) {
+      checkReviewLimit();
+    }
+  }, [loading, reviews.length]);
 
   const filteredReviews = reviews.filter(review => {
     const matchesSearch = review.review_text.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,6 +180,31 @@ export default function Reviews() {
           )}
         </CardContent>
       </Card>
+
+      {/* Subscription Limit Alert */}
+      {reviewLimitInfo && !reviewLimitInfo.isSubscribed && (
+        <Alert className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
+          <Crown className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="flex items-center justify-between">
+            <div>
+              <span className="font-medium text-amber-800">
+                Free Plan: {reviewLimitInfo.reviewCount}/{reviewLimitInfo.limit} reviews used
+              </span>
+              {reviewLimitInfo.reviewCount >= reviewLimitInfo.limit && (
+                <p className="text-sm text-amber-700 mt-1">
+                  You've reached your review limit. Upgrade to Pro for unlimited reviews.
+                </p>
+              )}
+            </div>
+            <Link to="/settings">
+              <Button size="sm" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0 ml-4">
+                <Crown className="w-4 h-4 mr-1" />
+                Upgrade to Pro
+              </Button>
+            </Link>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Results Summary */}
       <div className="flex items-center justify-between">

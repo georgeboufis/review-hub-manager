@@ -11,6 +11,60 @@ export type Platform = Tables<'platforms'>;
  */
 export class ReviewsService {
   /**
+   * Get review count for the current user
+   */
+  static async getReviewCount(): Promise<{ data: number | null; error: any }> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return { data: null, error: 'User not authenticated' };
+      }
+
+      const { count, error } = await supabase
+        .from('reviews')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      return { data: count, error };
+    } catch (error) {
+      console.error('Error getting review count:', error);
+      return { data: null, error };
+    }
+  }
+
+  /**
+   * Check if user can add more reviews based on their subscription
+   */
+  static async canAddReview(): Promise<{ canAdd: boolean; reviewCount: number; limit: number; isSubscribed: boolean }> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return { canAdd: false, reviewCount: 0, limit: 10, isSubscribed: false };
+      }
+
+      // Get current review count
+      const { data: count } = await this.getReviewCount();
+      const reviewCount = count || 0;
+
+      // Get subscription status
+      const { data: subscriber } = await supabase
+        .from('subscribers')
+        .select('subscribed')
+        .eq('user_id', user.id)
+        .single();
+
+      const isSubscribed = subscriber?.subscribed || false;
+      const limit = isSubscribed ? Infinity : 10;
+      const canAdd = isSubscribed || reviewCount < 10;
+
+      return { canAdd, reviewCount, limit: isSubscribed ? -1 : 10, isSubscribed };
+    } catch (error) {
+      console.error('Error checking review limit:', error);
+      return { canAdd: true, reviewCount: 0, limit: 10, isSubscribed: false };
+    }
+  }
+
+  /**
    * Fetch all reviews for the current authenticated user
    */
   static async getUserReviews(): Promise<{ data: Review[] | null; error: any }> {
