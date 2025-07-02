@@ -6,8 +6,10 @@ import { Label } from '@/components/ui/label';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Login() {
+  const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({

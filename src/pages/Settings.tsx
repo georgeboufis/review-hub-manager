@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const platforms = [
   {
@@ -39,6 +40,7 @@ const platforms = [
 ];
 
 export default function Settings() {
+  const { t } = useLanguage();
   const { toast } = useToast();
   const [notifications, setNotifications] = useState({
     newReviews: true,

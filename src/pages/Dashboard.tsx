@@ -3,8 +3,10 @@ import { Badge } from '@/components/ui/badge';
 import { mockReviews, analyticsData } from '@/data/mockData';
 import { Star } from 'lucide-react';
 import ReviewCard from '@/components/ReviewCard';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Dashboard() {
+  const { t } = useLanguage();
   const totalReviews = mockReviews.length;
   const averageRating = (mockReviews.reduce((acc, review) => acc + review.rating, 0) / totalReviews).toFixed(1);
   const pendingReplies = mockReviews.filter(review => !review.replied).length;
@@ -32,15 +34,15 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Welcome back! Here's an overview of your guest reviews.</p>
+        <h1 className="text-3xl font-bold text-foreground">{t('dashboard_title')}</h1>
+        <p className="text-muted-foreground mt-2">{t('dashboard_subtitle')}</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Reviews</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('total_reviews')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">{totalReviews}</div>
@@ -50,7 +52,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('average_rating')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-2">
@@ -63,7 +65,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Replies</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('pending_replies')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">{pendingReplies}</div>
@@ -85,7 +87,7 @@ export default function Dashboard() {
       {/* Platform Breakdown */}
       <Card>
         <CardHeader>
-          <CardTitle>Reviews by Platform</CardTitle>
+          <CardTitle>{t('platform_distribution')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -111,7 +113,7 @@ export default function Dashboard() {
 
       {/* Recent Reviews */}
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-6">Recent Reviews</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6">{t('recent_reviews')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {recentReviews.map((review) => (
             <ReviewCard key={review.id} review={review} />

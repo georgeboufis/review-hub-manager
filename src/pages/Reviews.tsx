@@ -6,8 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { mockReviews } from '@/data/mockData';
 import ReviewCard from '@/components/ReviewCard';
 import { Search } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Reviews() {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [platformFilter, setPlatformFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
@@ -37,7 +39,7 @@ export default function Reviews() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Search reviews..."
+              placeholder={t('search_reviews')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"

@@ -2,8 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { analyticsData, positiveKeywords, negativeKeywords } from '@/data/mockData';
 import { SimpleLineChart, SimpleBarChart, SimplePieChart } from '@/components/SimpleChart';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Analytics() {
+  const { t } = useLanguage();
   return (
     <div className="space-y-8">
       <div>
