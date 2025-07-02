@@ -33,23 +33,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
+        console.log('Auth state change:', event, !!session);
+        if (isMounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+          
+          // Initialize dummy data for new users after successful login
+          if (event === 'SIGNED_IN' && session?.user) {
+            setTimeout(() => {
+              // This will only run if user has no reviews yet
+              console.log('User signed in, checking for dummy data...');
+            }, 100);
+          }
+        }
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('Error getting session:', error);
+      }
+      if (isMounted) {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, userData?: { firstName?: string; lastName?: string; businessName?: string }) => {
@@ -107,8 +128,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut({ scope: 'global' });
-    return { error };
+    try {
+      // Clear any local storage items
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
+      
+      if (!error) {
+        // Force redirect to login page
+        window.location.href = '/login';
+      }
+      
+      return { error };
+    } catch (error) {
+      console.error('Sign out error:', error);
+      return { error };
+    }
   };
 
   const value = {

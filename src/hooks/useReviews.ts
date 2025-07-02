@@ -14,17 +14,28 @@ export const useReviews = () => {
 
   // Fetch reviews
   const fetchReviews = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('No user found for fetching reviews');
+      setLoading(false);
+      return;
+    }
     
     setLoading(true);
     setError(null);
 
-    const { data, error } = await ReviewsService.getUserReviews();
-    
-    if (error) {
-      setError(error.message || 'Failed to fetch reviews');
-    } else {
-      setReviews(data || []);
+    try {
+      const { data, error } = await ReviewsService.getUserReviews();
+      
+      if (error) {
+        console.error('Error fetching reviews:', error);
+        setError(error.message || 'Failed to fetch reviews');
+      } else {
+        console.log('Reviews fetched successfully:', data?.length || 0);
+        setReviews(data || []);
+      }
+    } catch (err) {
+      console.error('Unexpected error fetching reviews:', err);
+      setError('Unexpected error occurred');
     }
     
     setLoading(false);
@@ -85,16 +96,34 @@ export const useReviews = () => {
 
   // Initialize dummy data for new users
   const initializeDummyData = async () => {
-    const { error } = await ReviewsService.insertDummyData();
-    if (!error) {
-      fetchReviews();
+    if (!user) {
+      console.log('No user found for initializing dummy data');
+      return;
+    }
+    
+    try {
+      const { error } = await ReviewsService.insertDummyData();
+      if (error) {
+        console.error('Error inserting dummy data:', error);
+      } else {
+        console.log('Dummy data initialized successfully');
+        fetchReviews();
+      }
+    } catch (err) {
+      console.error('Unexpected error initializing dummy data:', err);
     }
   };
 
   // Set up real-time subscription
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      console.log('No user, skipping reviews setup');
+      setLoading(false);
+      return;
+    }
 
+    console.log('Setting up reviews for user:', user.id);
+    
     // Fetch initial data
     fetchReviews();
 

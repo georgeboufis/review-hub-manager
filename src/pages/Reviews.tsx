@@ -10,7 +10,7 @@ import { useReviews } from '@/hooks/useReviews';
 
 export default function Reviews() {
   const { t } = useLanguage();
-  const { reviews, loading, error } = useReviews();
+  const { reviews, loading, error, createReview } = useReviews();
   const [searchTerm, setSearchTerm] = useState('');
   const [platformFilter, setPlatformFilter] = useState('all');
   const [ratingFilter, setRatingFilter] = useState('all');
@@ -29,11 +29,59 @@ export default function Reviews() {
 
   const pendingCount = reviews.filter(review => !review.replied).length;
 
+  // Test function to create a demo review
+  const createTestReview = async () => {
+    try {
+      const result = await createReview({
+        platform: 'test',
+        guest_name: 'Test User',
+        date: new Date().toISOString().split('T')[0],
+        rating: 5,
+        review_text: 'This is a test review to verify the system is working!'
+      });
+      
+      if (result.success) {
+        console.log('Test review created successfully');
+      } else {
+        console.error('Failed to create test review:', result.error);
+      }
+    } catch (error) {
+      console.error('Error creating test review:', error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">{t('reviews_title')}</h1>
         <p className="text-muted-foreground mt-2">{t('reviews_subtitle')}</p>
+        
+        {/* Debug info */}
+        {loading && (
+          <p className="text-sm text-blue-600 mt-2">Loading reviews...</p>
+        )}
+        {error && (
+          <p className="text-sm text-red-600 mt-2">Error: {error}</p>
+        )}
+        {!loading && !error && reviews.length === 0 && (
+          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <p className="text-sm text-yellow-800">
+              No reviews found. This might be because:
+            </p>
+            <ul className="text-sm text-yellow-700 mt-2 list-disc ml-4">
+              <li>You're not logged in properly</li>
+              <li>No reviews have been added yet</li>
+              <li>There's a database connection issue</li>
+            </ul>
+            <Button 
+              onClick={createTestReview}
+              size="sm"
+              className="mt-3"
+            >
+              Create Test Review
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Filters */}

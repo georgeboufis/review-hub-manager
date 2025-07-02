@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 export default function Dashboard() {
   const { t } = useLanguage();
   const { analytics, loading: analyticsLoading } = useAnalytics();
-  const { initializeDummyData } = useReviews();
+  const { initializeDummyData, reviews, loading: reviewsLoading } = useReviews();
 
   // Initialize dummy data for new users on first load
   useEffect(() => {

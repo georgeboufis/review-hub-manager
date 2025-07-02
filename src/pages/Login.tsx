@@ -27,7 +27,8 @@ export default function Login() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate('/');
+      console.log('User already logged in, redirecting...');
+      navigate('/', { replace: true });
     }
   }, [user, navigate]);
 
@@ -60,11 +61,12 @@ export default function Login() {
             });
           }
         } else {
+          console.log('Login successful');
           toast({
             title: "Welcome back!",
             description: "You have successfully logged in.",
           });
-          navigate('/');
+          // Don't navigate immediately, let auth state change handle it
         }
       } else {
         if (formData.password !== formData.confirmPassword) {
@@ -98,10 +100,12 @@ export default function Login() {
             });
           }
         } else {
+          console.log('Signup successful');
           toast({
             title: "Account created!",
-            description: "Please check your email to confirm your account.",
+            description: "Welcome! Your account has been created successfully.",
           });
+          // Account created, user should be automatically logged in
         }
       }
     } catch (error) {
