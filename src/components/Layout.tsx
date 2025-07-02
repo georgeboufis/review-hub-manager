@@ -28,12 +28,7 @@ const getNavigation = (t: (key: string) => string) => [{
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'el', name: 'Greek', flag: '🇬🇷' },
-  { code: 'fr', name: 'French', flag: '🇫🇷' },
-  { code: 'de', name: 'German', flag: '🇩🇪' },
-  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
-  { code: 'ar', name: 'Arabic', flag: '🇸🇦' },
-  { code: 'ja', name: 'Japanese', flag: '🇯🇵' }
+  { code: 'el', name: 'Greek', flag: '🇬🇷' }
 ];
 export default function Layout() {
   const location = useLocation();
