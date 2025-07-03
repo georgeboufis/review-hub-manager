@@ -12,6 +12,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useReviews } from '@/hooks/useReviews';
 import { useAuth } from '@/contexts/AuthContext';
 import { ReviewsService } from '@/services/reviewsService';
+import { UpgradeModal } from '@/components/UpgradeModal';
 
 export default function Reviews() {
   const { t } = useLanguage();
@@ -26,6 +27,7 @@ export default function Reviews() {
     limit: number;
     isSubscribed: boolean;
   } | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
     const checkReviewLimit = async () => {
@@ -54,6 +56,12 @@ export default function Reviews() {
 
   // Test function to create a demo review
   const createTestReview = async () => {
+    // Check if user can add review before creating
+    if (reviewLimitInfo && !reviewLimitInfo.canAdd) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
     try {
       const result = await createReview({
         platform: 'test',
@@ -281,6 +289,14 @@ export default function Reviews() {
           </Card>
         )}
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal 
+        open={showUpgradeModal}
+        onOpenChange={setShowUpgradeModal}
+        reviewCount={reviewLimitInfo?.reviewCount || 0}
+        limit={reviewLimitInfo?.limit || 10}
+      />
     </div>
   );
 }
