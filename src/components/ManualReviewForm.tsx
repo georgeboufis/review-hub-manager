@@ -15,15 +15,23 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { useReviews } from '@/hooks/useReviews';
+import { validateReviewText, validateGuestName, checkRateLimit } from '@/lib/security';
+import { sanitizeErrorMessage } from '@/lib/errorHandling';
 
 const reviewFormSchema = z.object({
   platform: z.string().min(1, 'Platform is required'),
-  guest_name: z.string().min(1, 'Guest name is required'),
+  guest_name: z.string().min(1, 'Guest name is required').refine((val) => {
+    const validation = validateGuestName(val);
+    return validation.isValid;
+  }, 'Invalid guest name format'),
   date: z.date({
     required_error: 'Date is required',
   }),
   rating: z.number().min(1, 'Rating must be at least 1').max(5, 'Rating must be at most 5'),
-  review_text: z.string().min(1, 'Review text is required'),
+  review_text: z.string().min(1, 'Review text is required').refine((val) => {
+    const validation = validateReviewText(val);
+    return validation.isValid;
+  }, 'Review text contains invalid content'),
 });
 
 type ReviewFormData = z.infer<typeof reviewFormSchema>;
@@ -58,14 +66,33 @@ export function ManualReviewForm({ open, onOpenChange }: ManualReviewFormProps) 
   });
 
   const onSubmit = async (data: ReviewFormData) => {
+    // Rate limiting check
+    const clientId = `review_form_${navigator.userAgent.slice(0, 20)}`;
+    if (!checkRateLimit(clientId, 10, 300000)) { // 10 attempts per 5 minutes
+      toast({
+        title: 'Too Many Requests',
+        description: 'Please wait before submitting another review.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      // Additional validation and sanitization
+      const guestNameValidation = validateGuestName(data.guest_name);
+      const reviewTextValidation = validateReviewText(data.review_text);
+
+      if (!guestNameValidation.isValid || !reviewTextValidation.isValid) {
+        throw new Error('Invalid input data');
+      }
+
       const result = await createReview({
         platform: data.platform,
-        guest_name: data.guest_name,
+        guest_name: guestNameValidation.sanitized,
         date: format(data.date, 'yyyy-MM-dd'),
         rating: data.rating,
-        review_text: data.review_text,
+        review_text: reviewTextValidation.sanitized,
       });
 
       if (result.success) {
@@ -79,9 +106,10 @@ export function ManualReviewForm({ open, onOpenChange }: ManualReviewFormProps) 
         throw new Error(result.error?.message || 'Failed to create review');
       }
     } catch (error) {
+      const sanitizedMessage = sanitizeErrorMessage(error);
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to add review',
+        description: sanitizedMessage,
         variant: 'destructive',
       });
     } finally {

@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { sanitizeEmail, sanitizeText, checkRateLimit } from '@/lib/security';
+import { sanitizeErrorMessage, logSecurityEvent } from '@/lib/errorHandling';
 
 export default function Login() {
   const { t } = useLanguage();
@@ -41,32 +43,50 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Rate limiting check
+    const clientId = `auth_${navigator.userAgent.slice(0, 20)}`;
+    if (!checkRateLimit(clientId, 5, 300000)) { // 5 attempts per 5 minutes
+      toast({
+        title: "Too many attempts",
+        description: "Please wait before trying again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     
     try {
+      // Sanitize and validate inputs
+      const sanitizedEmail = sanitizeEmail(formData.email);
+      if (!sanitizedEmail) {
+        toast({
+          title: "Invalid email",
+          description: "Please enter a valid email address.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       if (isLogin) {
-        const { error } = await signIn(formData.email, formData.password);
+        const { error } = await signIn(sanitizedEmail, formData.password);
         if (error) {
-          if (error.message.includes('Invalid login credentials')) {
-            toast({
-              title: "Login failed",
-              description: "Invalid email or password. Please try again.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Login failed",
-              description: error.message,
-              variant: "destructive",
-            });
-          }
+          logSecurityEvent('login_failed', { email: sanitizedEmail });
+          const sanitizedMessage = sanitizeErrorMessage(error);
+          toast({
+            title: "Login failed",
+            description: sanitizedMessage,
+            variant: "destructive",
+          });
         } else {
           console.log('Login successful');
+          logSecurityEvent('login_successful', { email: sanitizedEmail });
           toast({
             title: "Welcome back!",
             description: "You have successfully logged in.",
           });
-          // Don't navigate immediately, let auth state change handle it
         }
       } else {
         if (formData.password !== formData.confirmPassword) {
@@ -79,39 +99,39 @@ export default function Login() {
           return;
         }
 
-        const { error } = await signUp(formData.email, formData.password, {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          businessName: formData.businessName,
+        // Sanitize signup data
+        const sanitizedFirstName = sanitizeText(formData.firstName);
+        const sanitizedLastName = sanitizeText(formData.lastName);
+        const sanitizedBusinessName = sanitizeText(formData.businessName);
+
+        const { error } = await signUp(sanitizedEmail, formData.password, {
+          firstName: sanitizedFirstName,
+          lastName: sanitizedLastName,
+          businessName: sanitizedBusinessName,
         });
         
         if (error) {
-          if (error.message.includes('User already registered')) {
-            toast({
-              title: "Account exists",
-              description: "An account with this email already exists. Please sign in instead.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Sign up failed",
-              description: error.message,
-              variant: "destructive",
-            });
-          }
+          logSecurityEvent('signup_failed', { email: sanitizedEmail });
+          const sanitizedMessage = sanitizeErrorMessage(error);
+          toast({
+            title: "Sign up failed",
+            description: sanitizedMessage,
+            variant: "destructive",
+          });
         } else {
           console.log('Signup successful');
+          logSecurityEvent('signup_successful', { email: sanitizedEmail });
           toast({
             title: "Account created!",
             description: "Welcome! Your account has been created successfully.",
           });
-          // Account created, user should be automatically logged in
         }
       }
     } catch (error) {
+      const sanitizedMessage = sanitizeErrorMessage(error);
       toast({
         title: "An error occurred",
-        description: "Please try again later.",
+        description: sanitizedMessage,
         variant: "destructive",
       });
     } finally {

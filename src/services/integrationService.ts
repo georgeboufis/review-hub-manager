@@ -1,5 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { ReviewsService } from './reviewsService';
+import { encryptData, sanitizeText } from '@/lib/security';
+import { sanitizeErrorMessage, logSecurityEvent } from '@/lib/errorHandling';
 
 /**
  * Service for handling platform integrations
@@ -114,18 +116,35 @@ export class IntegrationService {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        logSecurityEvent('unauthorized_credential_storage_attempt', { platform });
         return { success: false, error: 'User not authenticated' };
       }
 
+      // Sanitize platform name
+      const sanitizedPlatform = sanitizeText(platform);
+      if (!sanitizedPlatform) {
+        return { success: false, error: 'Invalid platform name' };
+      }
+
+      // Encrypt sensitive credentials
+      const encryptedCredentials: Record<string, string> = {};
+      for (const [key, value] of Object.entries(credentials)) {
+        if (typeof value === 'string' && value.length > 0) {
+          encryptedCredentials[sanitizeText(key)] = await encryptData(value);
+        }
+      }
+
+      if (Object.keys(encryptedCredentials).length === 0) {
+        return { success: false, error: 'No valid credentials provided' };
+      }
+
       // Store credentials in user_integrations table
-      // Note: This will work once Supabase types are regenerated after migration
-      // For now, we'll use a direct insert approach
       const { error } = await supabase
-        .from('user_integrations' as any)
+        .from('user_integrations')
         .upsert({
           user_id: user.id,
-          platform,
-          credentials: credentials,
+          platform: sanitizedPlatform,
+          credentials: encryptedCredentials,
           updated_at: new Date().toISOString(),
         });
 
@@ -133,12 +152,14 @@ export class IntegrationService {
         throw error;
       }
 
+      logSecurityEvent('credentials_stored', { platform: sanitizedPlatform, userId: user.id });
       return { success: true };
     } catch (error) {
       console.error('Error storing credentials:', error);
+      const sanitizedMessage = sanitizeErrorMessage(error);
       return { 
         success: false, 
-        error: error instanceof Error ? error.message : 'Failed to store credentials' 
+        error: sanitizedMessage
       };
     }
   }

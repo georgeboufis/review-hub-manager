@@ -6,6 +6,14 @@
     <title>Guest Review Manager</title>
     <meta name="description" content="Manage hotel and Airbnb guest reviews from multiple platforms in one place" />
     <meta name="author" content="Guest Review Manager" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://api.openai.com; frame-ancestors 'none';" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
 
     <meta property="og:title" content="Guest Review Manager" />
     <meta property="og:description" content="Manage hotel and Airbnb guest reviews from multiple platforms in one place" />
