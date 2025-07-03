@@ -167,30 +167,39 @@ export type Database = {
       }
       user_integrations: {
         Row: {
+          access_count: number | null
           created_at: string
           credentials: Json
+          encryption_version: number | null
           id: string
           is_active: boolean
+          last_accessed: string | null
           last_sync: string | null
           platform: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          access_count?: number | null
           created_at?: string
           credentials?: Json
+          encryption_version?: number | null
           id?: string
           is_active?: boolean
+          last_accessed?: string | null
           last_sync?: string | null
           platform: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          access_count?: number | null
           created_at?: string
           credentials?: Json
+          encryption_version?: number | null
           id?: string
           is_active?: boolean
+          last_accessed?: string | null
           last_sync?: string | null
           platform?: string
           updated_at?: string
