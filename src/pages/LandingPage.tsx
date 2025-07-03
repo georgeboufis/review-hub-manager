@@ -4,6 +4,51 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Star, Upload, MessageSquare, Zap, ArrowRight, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { TestimonialsColumn } from '@/components/ui/testimonials-columns';
+import { motion } from 'motion/react';
+
+const testimonials = [
+  {
+    text: "This app has revolutionized how we manage guest feedback. We've increased our response rate by 300% and our overall rating has improved significantly.",
+    image: "https://randomuser.me/api/portraits/women/1.jpg",
+    name: "Maria Konstantinou",
+    role: "Boutique Hotel Owner, Mykonos",
+  },
+  {
+    text: "Finally, a solution that understands the Greek hospitality market. The CSV import feature saved us hours of manual work every week.",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
+    name: "Dimitris Papadakis",
+    role: "Airbnb Superhost, Santorini",
+  },
+  {
+    text: "The Google Reviews integration is seamless. We never miss a guest comment anymore and our reputation management has improved dramatically.",
+    image: "https://randomuser.me/api/portraits/women/3.jpg",
+    name: "Anna Nikolaidou",
+    role: "Property Manager, Athens",
+  },
+  {
+    text: "Managing reviews from Booking.com, Airbnb, and Google was a nightmare. This dashboard simplified everything and boosted our efficiency.",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    name: "Kostas Georgiou",
+    role: "Hotel Chain Manager, Crete",
+  },
+  {
+    text: "The unified reply system helped us maintain consistent communication across all platforms. Our guest satisfaction scores have never been higher.",
+    image: "https://randomuser.me/api/portraits/women/5.jpg",
+    name: "Sofia Antoniadou",
+    role: "Vacation Rental Owner, Rhodes",
+  },
+  {
+    text: "As a property management company, this tool streamlined our review workflow. We can now manage 50+ properties efficiently from one dashboard.",
+    image: "https://randomuser.me/api/portraits/women/6.jpg",
+    name: "Elena Katsaros",
+    role: "Operations Director, Thessaloniki",
+  },
+];
+
+const firstColumn = testimonials.slice(0, 2);
+const secondColumn = testimonials.slice(2, 4);
+const thirdColumn = testimonials.slice(4, 6);
 
 export default function LandingPage() {
   const [email, setEmail] = useState('');
@@ -61,64 +106,31 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Hero Social Proof - Mini Testimonials */}
-          <div className="max-w-5xl mx-auto">
-            <p className="text-center text-muted-foreground mb-8 text-sm">
-              Trusted by hospitality professionals across Greece
-            </p>
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-semibold text-sm">MK</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">Maria K.</div>
-                      <div className="text-xs text-muted-foreground">Hotel Owner, Mykonos</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    "Response rate increased by 300% since switching to this platform."
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-semibold text-sm">DP</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">Dimitris P.</div>
-                      <div className="text-xs text-muted-foreground">Airbnb Superhost, Santorini</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    "CSV import saved us hours of manual work every week."
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-semibold text-sm">AN</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">Anna N.</div>
-                      <div className="text-xs text-muted-foreground">Property Manager, Athens</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    "Finally, all our reviews in one organized dashboard."
-                  </p>
-                </CardContent>
-              </Card>
+          {/* Animated Testimonials */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="flex justify-center mb-6">
+              <div className="border border-border/50 py-2 px-4 rounded-lg bg-card/50 backdrop-blur-sm">
+                <span className="text-sm text-muted-foreground">Testimonials</span>
+              </div>
             </div>
-          </div>
+            <h3 className="text-2xl md:text-3xl font-bold text-center mb-4">
+              What our users say
+            </h3>
+            <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
+              See what hospitality professionals across Greece have to say about transforming their review management.
+            </p>
+            
+            <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)] max-h-[500px] overflow-hidden">
+              <TestimonialsColumn testimonials={firstColumn} duration={15} />
+              <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={19} />
+              <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={17} />
+            </div>
+          </motion.div>
         </div>
       </section>
 
