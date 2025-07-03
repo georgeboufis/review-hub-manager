@@ -124,13 +124,25 @@ export default function Login() {
     try {
       const { error } = await signInWithGoogle();
       if (error) {
+        console.error('Google OAuth error:', error);
+        // More specific error messages
+        let errorMessage = error.message;
+        if (error.message?.includes('unauthorized_client')) {
+          errorMessage = "Google OAuth not configured. Please check provider settings.";
+        } else if (error.message?.includes('redirect_uri_mismatch')) {
+          errorMessage = "Redirect URL mismatch. Please check OAuth configuration.";
+        }
+        
         toast({
           title: "Google Sign In Failed",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive",
         });
+      } else {
+        console.log('Google OAuth initiated successfully');
       }
     } catch (error) {
+      console.error('Google OAuth unexpected error:', error);
       toast({
         title: "An error occurred",
         description: "Please try again later.",
@@ -146,13 +158,25 @@ export default function Login() {
     try {
       const { error } = await signInWithApple();
       if (error) {
+        console.error('Apple OAuth error:', error);
+        // More specific error messages
+        let errorMessage = error.message;
+        if (error.message?.includes('unauthorized_client')) {
+          errorMessage = "Apple OAuth not configured. Please check provider settings.";
+        } else if (error.message?.includes('redirect_uri_mismatch')) {
+          errorMessage = "Redirect URL mismatch. Please check Apple OAuth configuration.";
+        }
+        
         toast({
           title: "Apple Sign In Failed",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive",
         });
+      } else {
+        console.log('Apple OAuth initiated successfully');
       }
     } catch (error) {
+      console.error('Apple OAuth unexpected error:', error);
       toast({
         title: "An error occurred",
         description: "Please try again later.",

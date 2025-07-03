@@ -111,6 +111,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       provider: 'google',
       options: {
         redirectTo: redirectUrl,
+        scopes: 'openid email profile', // Explicit scopes for better compatibility
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       }
     });
     
@@ -124,6 +129,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       provider: 'apple',
       options: {
         redirectTo: redirectUrl,
+        scopes: 'openid email name', // Apple requires explicit scopes
       }
     });
     
