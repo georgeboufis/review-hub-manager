@@ -39,23 +39,85 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-20 px-4 text-center bg-gradient-to-br from-primary/5 to-secondary/5">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
-            Manage All Your Guest Reviews
-            <span className="text-primary block mt-2">In One Place</span>
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Stop juggling between Google, Booking.com, and Airbnb. Import, organize, and reply to all your guest reviews from a single, powerful dashboard built for Greek hospitality professionals.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8 py-4">
-              Get Early Access
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-4">
-              Watch Demo
-            </Button>
+      <section className="py-24 px-4 bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div className="max-w-7xl mx-auto">
+          {/* Main Hero Content */}
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
+              Manage All Your Guest Reviews
+              <span className="text-primary block mt-2">In One Place</span>
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Stop juggling between Google, Booking.com, and Airbnb. Import, organize, and reply to all your guest reviews from a single, powerful dashboard built for Greek hospitality professionals.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button size="lg" className="text-lg px-8 py-4">
+                Get Early Access
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button variant="outline" size="lg" className="text-lg px-8 py-4">
+                Watch Demo
+              </Button>
+            </div>
+          </div>
+
+          {/* Hero Social Proof - Mini Testimonials */}
+          <div className="max-w-5xl mx-auto">
+            <p className="text-center text-muted-foreground mb-8 text-sm">
+              Trusted by hospitality professionals across Greece
+            </p>
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
+                      <span className="text-primary font-semibold text-sm">MK</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-sm">Maria K.</div>
+                      <div className="text-xs text-muted-foreground">Hotel Owner, Mykonos</div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    "Response rate increased by 300% since switching to this platform."
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
+                      <span className="text-primary font-semibold text-sm">DP</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-sm">Dimitris P.</div>
+                      <div className="text-xs text-muted-foreground">Airbnb Superhost, Santorini</div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    "CSV import saved us hours of manual work every week."
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
+                      <span className="text-primary font-semibold text-sm">AN</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-sm">Anna N.</div>
+                      <div className="text-xs text-muted-foreground">Property Manager, Athens</div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    "Finally, all our reviews in one organized dashboard."
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
