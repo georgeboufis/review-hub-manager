@@ -57,6 +57,42 @@ export type Database = {
         }
         Relationships: []
       }
+      pricing: {
+        Row: {
+          created_at: string
+          currency: string | null
+          date: string
+          id: string
+          platform: string
+          price: number | null
+          property_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          date?: string
+          id?: string
+          platform: string
+          price?: number | null
+          property_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          date?: string
+          id?: string
+          platform?: string
+          price?: number | null
+          property_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           business_name: string | null
