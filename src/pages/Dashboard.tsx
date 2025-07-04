@@ -3,8 +3,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, MessageSquare } from 'lucide-react';
 import ReviewCard from '@/components/ReviewCard';
+import { ProductionHealthCheck } from '@/components/ProductionHealthCheck';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAnalytics, useReviews } from '@/hooks/useReviews';
+import { useAnalytics as useAppAnalytics } from '@/hooks/useAnalytics';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import FeedbackModal from '@/components/FeedbackModal';
@@ -13,12 +15,17 @@ export default function Dashboard() {
   const { t } = useLanguage();
   const { analytics, loading: analyticsLoading } = useAnalytics();
   const { initializeDummyData, reviews, loading: reviewsLoading } = useReviews();
+  const { trackUserAction } = useAppAnalytics();
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
   // Initialize dummy data for new users on first load
   useEffect(() => {
     initializeDummyData();
   }, [initializeDummyData]);
+
+  useEffect(() => {
+    trackUserAction('dashboard_view');
+  }, [trackUserAction]);
 
   const { totalReviews, averageRating, pendingReplies, platformDistribution, recentReviews } = analytics;
 
@@ -57,6 +64,9 @@ export default function Dashboard() {
           Give Feedback
         </Button>
       </div>
+
+      {/* Production Health Check */}
+      <ProductionHealthCheck />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
