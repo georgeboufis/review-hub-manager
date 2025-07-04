@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RefreshCw, TrendingUp, Euro, Calendar, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { PricingService, PricingData } from '@/services/pricingService';
-import { SimpleChart } from '@/components/SimpleChart';
+import { SimpleBarChart } from '@/components/SimpleChart';
 
 export default function PricingDashboard() {
   const [pricingData, setPricingData] = useState<PricingData[]>([]);
@@ -214,11 +214,10 @@ export default function PricingDashboard() {
             </CardHeader>
             <CardContent>
               {analytics && analytics.priceHistory.length > 0 ? (
-                <SimpleChart 
+                <SimpleBarChart 
                   data={analytics.priceHistory}
                   xKey="date"
                   yKey="price"
-                  title="Price Trends"
                 />
               ) : (
                 <div className="text-center py-8 text-muted-foreground">

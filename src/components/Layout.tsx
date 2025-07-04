@@ -19,6 +19,9 @@ const getNavigation = (t: (key: string) => string) => [{
   name: 'Integrations',
   href: '/integrations'
 }, {
+  name: 'Pricing',
+  href: '/pricing'
+}, {
   name: t('settings'),
   href: '/settings'
 }, {

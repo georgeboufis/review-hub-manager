@@ -15,6 +15,7 @@ import Settings from "./pages/Settings";
 import Contact from "./pages/Contact";
 import ReplyPage from "./pages/ReplyPage";
 import Integrations from "./pages/Integrations";
+import PricingDashboard from "./pages/PricingDashboard";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -37,6 +38,7 @@ const AppContent = () => {
               <Route path="reviews" element={<Reviews />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="integrations" element={<Integrations />} />
+              <Route path="pricing" element={<PricingDashboard />} />
               <Route path="settings" element={<Settings />} />
               <Route path="contact" element={<Contact />} />
               <Route path="reply/:reviewId" element={<ReplyPage />} />
