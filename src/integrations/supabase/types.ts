@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      backup_logs: {
+        Row: {
+          backup_id: string
+          created_at: string
+          error_message: string | null
+          id: string
+          status: string
+          tables_backed_up: string[]
+          timestamp: string
+          total_records: number
+        }
+        Insert: {
+          backup_id: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          status?: string
+          tables_backed_up: string[]
+          timestamp?: string
+          total_records?: number
+        }
+        Update: {
+          backup_id?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          status?: string
+          tables_backed_up?: string[]
+          timestamp?: string
+          total_records?: number
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           comment: string | null
@@ -256,6 +289,10 @@ export type Database = {
       insert_dummy_reviews: {
         Args: { _user_id: string }
         Returns: undefined
+      }
+      trigger_manual_backup: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
     }
     Enums: {
