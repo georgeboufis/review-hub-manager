@@ -49,19 +49,20 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{t('dashboard_title')}</h1>
-          <p className="text-muted-foreground mt-2">{t('dashboard_subtitle')}</p>
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('dashboard_title')}</h1>
+          <p className="text-muted-foreground mt-2 text-sm md:text-base">{t('dashboard_subtitle')}</p>
         </div>
         <Button
           variant="outline"
           onClick={() => setFeedbackModalOpen(true)}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 w-full sm:w-auto"
         >
           <MessageSquare className="h-4 w-4" />
-          Give Feedback
+          <span className="sm:hidden">Feedback</span>
+          <span className="hidden sm:inline">Give Feedback</span>
         </Button>
       </div>
 
@@ -69,7 +70,7 @@ export default function Dashboard() {
       <ProductionHealthCheck />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100/50 border-blue-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-blue-900">{t('total_reviews')}</CardTitle>
@@ -120,7 +121,7 @@ export default function Dashboard() {
           <CardTitle className="text-lg">{t('platform_distribution')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
               <div className="text-3xl font-bold text-blue-600 mb-2">{platformCounts.booking}</div>
               <Badge className="bg-blue-600 text-white px-3 py-1">Booking.com</Badge>
@@ -142,11 +143,13 @@ export default function Dashboard() {
       </Card>
 
       {/* Recent Reviews */}
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">{t('recent_reviews')}</h2>
+      <div className="space-y-4 md:space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground">{t('recent_reviews')}</h2>
           <Link to="/reviews">
-            <Button variant="outline" size="sm">View All</Button>
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">
+              View All
+            </Button>
           </Link>
         </div>
         
@@ -170,11 +173,11 @@ export default function Dashboard() {
                   Start by adding some dummy data or create your first review to see them here!
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link to="/reviews">
-                    <Button variant="professional">{t('view_all_reviews')}</Button>
+                  <Link to="/reviews" className="w-full sm:w-auto">
+                    <Button variant="professional" className="w-full">{t('view_all_reviews')}</Button>
                   </Link>
-                  <Link to="/integrations">
-                    <Button variant="outline">Add Reviews</Button>
+                  <Link to="/integrations" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full">Add Reviews</Button>
                   </Link>
                 </div>
               </CardContent>

@@ -45,10 +45,10 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
   return (
     <Card className="interactive-card border-border hover:border-primary/30 transition-all duration-200 bg-card">
-      <CardHeader className="pb-4 space-y-3">
-        <div className="flex items-start justify-between gap-4">
+      <CardHeader className="pb-3 md:pb-4 space-y-3">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
-            <Badge className={platformColors[review.platform as keyof typeof platformColors]}>
+            <Badge className={`${platformColors[review.platform as keyof typeof platformColors]} text-xs`}>
               {platformLabels[review.platform as keyof typeof platformLabels]}
             </Badge>
           </div>
@@ -58,13 +58,13 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           </div>
         </div>
         
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-foreground">{review.guest_name}</span>
-          <span className="text-muted-foreground">{formatDate(review.date)}</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-2 text-sm">
+          <span className="font-medium text-foreground truncate max-w-[200px] sm:max-w-none">{review.guest_name}</span>
+          <span className="text-muted-foreground text-xs sm:text-sm">{formatDate(review.date)}</span>
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 md:space-y-4">
         <p className="text-sm text-foreground leading-relaxed line-clamp-3">
           {review.review_text}
         </p>
@@ -76,19 +76,19 @@ export default function ReviewCard({ review }: ReviewCardProps) {
           </div>
         )}
         
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
           <Badge 
             variant={review.replied ? "secondary" : "outline"}
-            className={review.replied ? "bg-green-50 text-green-700 border-green-200" : "bg-orange-50 text-orange-700 border-orange-200"}
+            className={`${review.replied ? "bg-green-50 text-green-700 border-green-200" : "bg-orange-50 text-orange-700 border-orange-200"} text-xs`}
           >
             {review.replied ? 'Replied' : 'Needs Reply'}
           </Badge>
           
-          <Link to={`/reply/${review.id}`}>
+          <Link to={`/reply/${review.id}`} className="w-full sm:w-auto">
             <Button 
               size="sm" 
               variant={review.replied ? "outline" : "professional"}
-              className="min-w-[80px]"
+              className="min-w-[80px] w-full sm:w-auto"
             >
               {review.replied ? 'Edit Reply' : 'Reply'}
             </Button>

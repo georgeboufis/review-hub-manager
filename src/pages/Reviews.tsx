@@ -82,10 +82,10 @@ export default function Reviews() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">{t('reviews_title')}</h1>
-        <p className="text-muted-foreground mt-2">{t('reviews_subtitle')}</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('reviews_title')}</h1>
+        <p className="text-muted-foreground mt-2 text-sm md:text-base">{t('reviews_subtitle')}</p>
         
         {/* Debug info */}
         {loading && (
@@ -118,19 +118,19 @@ export default function Reviews() {
       {/* Filters */}
       <Card className="bg-gradient-to-r from-background to-accent/10">
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder={t('search_reviews')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-11"
+                className="pl-10 h-10 md:h-11"
               />
             </div>
             
             <Select value={platformFilter} onValueChange={setPlatformFilter}>
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-10 md:h-11">
                 <SelectValue placeholder={t('filter_by_platform')} />
               </SelectTrigger>
               <SelectContent>
@@ -143,7 +143,7 @@ export default function Reviews() {
             </Select>
             
             <Select value={ratingFilter} onValueChange={setRatingFilter}>
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-10 md:h-11">
                 <SelectValue placeholder={t('filter_by_rating')} />
               </SelectTrigger>
               <SelectContent>
@@ -277,10 +277,10 @@ export default function Reviews() {
                 </Button>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link to="/integrations">
-                    <Button variant="professional">Import Reviews</Button>
+                  <Link to="/integrations" className="w-full sm:w-auto">
+                    <Button variant="professional" className="w-full">Import Reviews</Button>
                   </Link>
-                  <Button variant="outline" onClick={createTestReview}>
+                  <Button variant="outline" onClick={createTestReview} className="w-full sm:w-auto">
                     Create Test Review
                   </Button>
                 </div>

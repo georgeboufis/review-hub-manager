@@ -153,4 +153,36 @@ All colors MUST be HSL.
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
   }
+  
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .mobile-responsive {
+      @apply text-sm px-2 py-2;
+    }
+    
+    .mobile-grid {
+      @apply grid-cols-1;
+    }
+    
+    .mobile-padding {
+      @apply px-4 py-3;
+    }
+  }
+  
+  /* Tablet optimizations */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .tablet-responsive {
+      @apply text-base px-3 py-2;
+    }
+  }
+  
+  /* Improved text wrapping for mobile */
+  .mobile-text {
+    @apply text-sm leading-5 break-words;
+  }
+  
+  /* Responsive containers */
+  .container-responsive {
+    @apply w-full max-w-none sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl;
+  }
 }
