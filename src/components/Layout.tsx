@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Star } from 'lucide-react';
 import { useState } from 'react';
 const getNavigation = (t: (key: string) => string) => [{
   name: t('home'),
@@ -76,7 +77,8 @@ export default function Layout() {
       <header className="bg-white/95 backdrop-blur-sm shadow-elegant border-b border-border/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
+              <Star className="h-6 w-6 text-primary" />
               <h1 className="text-xl font-bold text-primary">{t('guest_review_manager')}</h1>
             </div>
             
