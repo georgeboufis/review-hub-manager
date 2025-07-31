@@ -12,6 +12,7 @@ import { IntegrationService } from '@/services/integrationService';
 import { ReviewsService } from '@/services/reviewsService';
 import { useReviews } from '@/hooks/useReviews';
 import { ManualReviewForm } from '@/components/ManualReviewForm';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Integrations() {
   const [googleApiKey, setGoogleApiKey] = useState('');
@@ -23,13 +24,14 @@ export default function Integrations() {
   const airbnbFileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { fetchReviews } = useReviews();
+  const { t } = useLanguage();
 
   // Store Google API credentials and fetch reviews
   const handleGoogleConnect = async () => {
     if (!googleApiKey || !googlePlaceId) {
       toast({
-        title: "Missing Information",
-        description: "Please provide both API key and Place ID",
+        title: t('missing_information'),
+        description: t('provide_api_key_place_id'),
         variant: "destructive",
       });
       return;
@@ -39,8 +41,8 @@ export default function Integrations() {
     const limitCheck = await ReviewsService.canAddReview();
     if (!limitCheck.canAdd) {
       toast({
-        title: "Review Limit Reached",
-        description: `You've reached your ${limitCheck.limit} review limit on the Free plan. Upgrade to Pro for unlimited reviews.`,
+        title: t('review_limit_reached'),
+        description: t('review_limit_reached_description') + ` ${limitCheck.limit} ` + t('review_limit_plan_text'),
         variant: "destructive",
       });
       return;
@@ -63,8 +65,8 @@ export default function Integrations() {
       
       if (result.success) {
         toast({
-          title: "Google Reviews Imported",
-          description: `Successfully imported ${result.count} reviews from Google Places`,
+          title: t('google_reviews_imported'),
+          description: t('successfully_imported_google_reviews') + ` ${result.count} ` + t('reviews_from_google'),
         });
         
         // Refresh reviews data
@@ -78,8 +80,8 @@ export default function Integrations() {
       }
     } catch (error) {
       toast({
-        title: "Connection Failed",
-        description: error instanceof Error ? error.message : "Failed to connect to Google Places API",
+        title: t('connection_failed'),
+        description: error instanceof Error ? error.message : t('failed_connect_google'),
         variant: "destructive",
       });
     } finally {
@@ -92,8 +94,8 @@ export default function Integrations() {
     const file = bookingFileRef.current?.files?.[0];
     if (!file) {
       toast({
-        title: "No File Selected",
-        description: "Please select a CSV file to import",
+        title: t('no_file_selected'),
+        description: t('select_csv_file'),
         variant: "destructive",
       });
       return;
@@ -105,8 +107,8 @@ export default function Integrations() {
       
       if (result.success) {
         toast({
-          title: "Booking.com Reviews Imported",
-          description: `Successfully imported ${result.count} reviews from CSV`,
+          title: t('booking_reviews_imported'),
+            description: t('successfully_imported_csv_reviews') + ` ${result.count} ` + t('reviews_from_csv'),
         });
         
         // Refresh reviews data
@@ -121,8 +123,8 @@ export default function Integrations() {
       }
     } catch (error) {
       toast({
-        title: "Import Failed",
-        description: error instanceof Error ? error.message : "Failed to import CSV file",
+        title: t('import_failed'),
+        description: error instanceof Error ? error.message : t('failed_import_csv'),
         variant: "destructive",
       });
     } finally {
@@ -135,8 +137,8 @@ export default function Integrations() {
     const file = airbnbFileRef.current?.files?.[0];
     if (!file) {
       toast({
-        title: "No File Selected",
-        description: "Please select a CSV file to import",
+        title: t('no_file_selected'),
+        description: t('select_csv_file'),
         variant: "destructive",
       });
       return;
@@ -148,8 +150,8 @@ export default function Integrations() {
       
       if (result.success) {
         toast({
-          title: "Airbnb Reviews Imported",
-          description: `Successfully imported ${result.count} reviews from CSV`,
+          title: t('airbnb_reviews_imported'),
+          description: t('successfully_imported_csv_reviews') + ` ${result.count} ` + t('reviews_from_csv'),
         });
         
         // Refresh reviews data
@@ -164,8 +166,8 @@ export default function Integrations() {
       }
     } catch (error) {
       toast({
-        title: "Import Failed",
-        description: error instanceof Error ? error.message : "Failed to import CSV file",
+        title: t('import_failed'),
+        description: error instanceof Error ? error.message : t('failed_import_csv'),
         variant: "destructive",
       });
     } finally {
@@ -176,9 +178,9 @@ export default function Integrations() {
   return (
     <div className="container mx-auto py-8 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Platform Integrations</h1>
+        <h1 className="text-3xl font-bold">{t('platform_integrations')}</h1>
         <p className="text-muted-foreground">
-          Connect your review platforms to automatically import guest reviews.
+          {t('connect_review_platforms')}
         </p>
       </div>
 
@@ -187,44 +189,44 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Globe className="h-5 w-5 text-green-600" />
-            <CardTitle>Google Reviews</CardTitle>
+            <CardTitle>{t('google_reviews')}</CardTitle>
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              API Available
+              {t('api_available')}
             </Badge>
           </div>
           <CardDescription>
-            Connect to Google Places API to automatically fetch reviews for your business location.
+            {t('google_reviews_description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="google-api-key">Google Places API Key</Label>
+            <Label htmlFor="google-api-key">{t('google_api_key')}</Label>
             <Input
               id="google-api-key"
               type="password"
-              placeholder="Enter your Google Places API key"
+              placeholder={t('enter_google_api_key')}
               value={googleApiKey}
               onChange={(e) => setGoogleApiKey(e.target.value)}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="google-place-id">Place ID</Label>
+            <Label htmlFor="google-place-id">{t('place_id')}</Label>
             <Input
               id="google-place-id"
-              placeholder="Enter your Google Place ID (e.g., ChIJN1t_tDeuEmsRUsoyG83frY4)"
+              placeholder={t('enter_place_id')}
               value={googlePlaceId}
               onChange={(e) => setGooglePlaceId(e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              Find your Place ID using the{' '}
+              {t('find_place_id_text')}{' '}
               <a 
                 href="https://developers.google.com/maps/documentation/places/web-service/place-id" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                Google Place ID Finder
+                {t('google_place_id_finder')}
               </a>
             </p>
           </div>
@@ -237,12 +239,12 @@ export default function Integrations() {
             {isConnecting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Fetching Reviews...
+                {t('fetching_reviews')}
               </>
             ) : (
               <>
                 <Globe className="w-4 h-4 mr-2" />
-                Fetch Google Reviews
+                {t('fetch_google_reviews')}
               </>
             )}
           </Button>
@@ -254,26 +256,25 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-blue-600" />
-            <CardTitle>Booking.com Reviews</CardTitle>
+            <CardTitle>{t('booking_reviews')}</CardTitle>
             <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-              Manual Import
+              {t('manual_import')}
             </Badge>
           </div>
           <CardDescription>
-            Booking.com doesn't provide public APIs. Upload your reviews manually using CSV import.
+            {t('booking_description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              <strong>No API Access:</strong> Booking.com restricts review data access to official partners only. 
-              Web scraping violates their Terms of Service and may result in legal action.
+              <strong>{t('no_api_access')}</strong> {t('booking_restrictions')}
             </AlertDescription>
           </Alert>
 
           <div className="space-y-2">
-            <Label htmlFor="booking-csv">Upload Booking.com Reviews (CSV)</Label>
+            <Label htmlFor="booking-csv">{t('upload_booking_csv')}</Label>
             <Input
               id="booking-csv"
               ref={bookingFileRef}
@@ -282,7 +283,7 @@ export default function Integrations() {
               className="cursor-pointer"
             />
             <p className="text-xs text-muted-foreground">
-              Expected format: guest_name, date, rating, review_text
+              {t('csv_format_expected')}
             </p>
           </div>
 
@@ -295,12 +296,12 @@ export default function Integrations() {
             {isImporting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Importing...
+                {t('importing')}
               </>
             ) : (
               <>
                 <Upload className="w-4 h-4 mr-2" />
-                Import CSV File
+                {t('import_csv_file')}
               </>
             )}
           </Button>
@@ -312,26 +313,25 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-red-600" />
-            <CardTitle>Airbnb Reviews</CardTitle>
+            <CardTitle>{t('airbnb_reviews')}</CardTitle>
             <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-              Manual Import
+              {t('manual_import')}
             </Badge>
           </div>
           <CardDescription>
-            Airbnb discontinued their public API. Use manual import or CSV upload from your host dashboard.
+            {t('airbnb_description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              <strong>API Discontinued:</strong> Airbnb shut down their public API in 2017. 
-              Manual data export from your host dashboard is the only legitimate option.
+              <strong>{t('api_discontinued')}</strong> {t('airbnb_restrictions')}
             </AlertDescription>
           </Alert>
 
           <div className="space-y-2">
-            <Label htmlFor="airbnb-csv">Upload Airbnb Reviews (CSV)</Label>
+            <Label htmlFor="airbnb-csv">{t('upload_airbnb_csv')}</Label>
             <Input
               id="airbnb-csv"
               ref={airbnbFileRef}
@@ -340,7 +340,7 @@ export default function Integrations() {
               className="cursor-pointer"
             />
             <p className="text-xs text-muted-foreground">
-              Expected format: guest_name, date, rating, review_text
+              {t('csv_format_expected')}
             </p>
           </div>
 
@@ -353,12 +353,12 @@ export default function Integrations() {
             {isImporting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Importing...
+                {t('importing')}
               </>
             ) : (
               <>
                 <Upload className="w-4 h-4 mr-2" />
-                Import CSV File
+                {t('import_csv_file')}
               </>
             )}
           </Button>
@@ -370,13 +370,13 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <MapPin className="h-5 w-5 text-purple-600" />
-            <CardTitle>Manual Review Entry</CardTitle>
+            <CardTitle>{t('manual_review_entry')}</CardTitle>
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              Always Available
+              {t('always_available')}
             </Badge>
           </div>
           <CardDescription>
-            Manually add reviews from any platform or source.
+            {t('manual_review_description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -385,7 +385,7 @@ export default function Integrations() {
             className="w-full"
             onClick={() => setIsManualFormOpen(true)}
           >
-            Add Review Manually
+            {t('add_review_manually')}
           </Button>
         </CardContent>
       </Card>
@@ -395,21 +395,21 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <AlertTriangle className="h-5 w-5 text-amber-600" />
-            <CardTitle className="text-amber-800">Security & Legal Considerations</CardTitle>
+            <CardTitle className="text-amber-800">{t('security_legal_considerations')}</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-amber-700">
           <div>
-            <strong>API Keys:</strong> All API keys are stored securely using Supabase Edge Functions and never exposed to the client.
+            <strong>{t('api_keys_security')}</strong> {t('api_keys_security_description')}
           </div>
           <div>
-            <strong>Data Compliance:</strong> We only collect review data you have legitimate access to as a property owner/manager.
+            <strong>{t('data_compliance')}</strong> {t('data_compliance_description')}
           </div>
           <div>
-            <strong>Terms of Service:</strong> Always respect platform Terms of Service. We do not support or recommend unauthorized data scraping.
+            <strong>{t('terms_of_service')}</strong> {t('terms_service_description')}
           </div>
           <div>
-            <strong>Data Privacy:</strong> Guest review data is handled according to GDPR and privacy best practices.
+            <strong>{t('data_privacy')}</strong> {t('data_privacy_description')}
           </div>
         </CardContent>
       </Card>
