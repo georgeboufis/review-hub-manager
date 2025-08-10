@@ -39,14 +39,15 @@ export class ReviewsService {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        return { canAdd: false, reviewCount: 0, limit: 10, isSubscribed: false };
+        // Not authenticated users cannot add reviews
+        return { canAdd: false, reviewCount: 0, limit: -1, isSubscribed: false };
       }
 
-      // Get current review count
+      // Get current review count (for analytics only)
       const { data: count } = await this.getReviewCount();
       const reviewCount = count || 0;
 
-      // Get subscription status
+      // Get subscription status (still computed, but not limiting)
       const { data: subscriber } = await supabase
         .from('subscribers')
         .select('subscribed')
@@ -54,13 +55,16 @@ export class ReviewsService {
         .single();
 
       const isSubscribed = subscriber?.subscribed || false;
-      const limit = isSubscribed ? Infinity : 10;
-      const canAdd = isSubscribed || reviewCount < 10;
 
-      return { canAdd, reviewCount, limit: isSubscribed ? -1 : 10, isSubscribed };
+      // Free plan is now unlimited as requested
+      const canAdd = true;
+      const limit = -1; // -1 represents unlimited
+
+      return { canAdd, reviewCount, limit, isSubscribed };
     } catch (error) {
       console.error('Error checking review limit:', error);
-      return { canAdd: true, reviewCount: 0, limit: 10, isSubscribed: false };
+      // Fail-open to allow adding reviews
+      return { canAdd: true, reviewCount: 0, limit: -1, isSubscribed: false };
     }
   }
 
