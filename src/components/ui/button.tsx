@@ -20,7 +20,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         professional: "bg-gradient-to-r from-primary to-primary-600 text-primary-foreground hover:shadow-lg transform hover:scale-105 transition-all duration-200",
         elegant: "bg-white text-primary border border-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-soft",
-        loading: "bg-muted text-muted-foreground cursor-not-allowed"
+        loading: "bg-muted text-muted-foreground cursor-not-allowed",
+        auth: "rounded-none bg-muted text-foreground shadow-soft hover:shadow-elegant hover:bg-muted/80 transition-all duration-300 focus-visible:shadow-elegant disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3"
       },
       size: {
         default: "h-10 px-4 py-2",
