@@ -16,22 +16,16 @@ serve(async (req) => {
 
     if (!placeId) {
       return new Response(
-        JSON.stringify({ error: 'Missing placeId' }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ success: false, error: 'Missing placeId', reviews: [], count: 0, code: 'missing_place_id' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
     const apiKey = Deno.env.get('GOOGLE_PLACES_API_KEY')
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: 'Server is missing GOOGLE_PLACES_API_KEY secret' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ success: false, error: 'Server is missing GOOGLE_PLACES_API_KEY secret', code: 'missing_api_key', reviews: [], count: 0 }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
@@ -43,11 +37,8 @@ serve(async (req) => {
 
     if (data.status !== 'OK') {
       return new Response(
-        JSON.stringify({ error: `Google API Error: ${data.status} - ${data.error_message || 'Unknown error'}` }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
+        JSON.stringify({ success: false, error: `Google API Error: ${data.status} - ${data.error_message || 'Unknown error'}`, code: 'google_api_error', reviews: [], count: 0 }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
@@ -69,13 +60,14 @@ serve(async (req) => {
     
     return new Response(
       JSON.stringify({ 
+        success: false,
         error: 'Internal server error',
-        details: error.message 
+        details: error.message,
+        code: 'internal_error',
+        reviews: [],
+        count: 0 
       }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 })

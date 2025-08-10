@@ -18,10 +18,15 @@ export class IntegrationService {
       });
 
       if (error) {
-        throw new Error(error.message);
+        console.error('fetch-google-reviews edge function error:', error);
+        const message = (error as any)?.message || 'Edge function returned a non-2xx status code';
+        return { success: false, error: message };
+      }
+      if (data && (data as any).success === false) {
+        return { success: false, error: (data as any).error || 'Failed to fetch Google reviews' };
       }
 
-      const reviews = data?.reviews || [];
+      const reviews = (data as any)?.reviews || [];
       let successCount = 0;
 
       // Save each review to the database
