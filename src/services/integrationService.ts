@@ -141,12 +141,15 @@ export class IntegrationService {
       // Store credentials in user_integrations table
       const { error } = await supabase
         .from('user_integrations')
-        .upsert({
-          user_id: user.id,
-          platform: sanitizedPlatform,
-          credentials: encryptedCredentials,
-          updated_at: new Date().toISOString(),
-        });
+        .upsert(
+          {
+            user_id: user.id,
+            platform: sanitizedPlatform,
+            credentials: encryptedCredentials,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'user_id,platform' }
+        );
 
       if (error) {
         throw error;
