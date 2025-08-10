@@ -12,11 +12,11 @@ serve(async (req) => {
   }
 
   try {
-    const { apiKey, placeId } = await req.json()
+    const { placeId } = await req.json()
 
-    if (!apiKey || !placeId) {
+    if (!placeId) {
       return new Response(
-        JSON.stringify({ error: 'Missing apiKey or placeId' }),
+        JSON.stringify({ error: 'Missing placeId' }),
         { 
           status: 400, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -24,7 +24,18 @@ serve(async (req) => {
       )
     }
 
-    // Fetch reviews from Google Places API
+    const apiKey = Deno.env.get('GOOGLE_PLACES_API_KEY')
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ error: 'Server is missing GOOGLE_PLACES_API_KEY secret' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    // Fetch reviews from Google Places API using server-side secret
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&key=${apiKey}`
     
     const response = await fetch(url)
@@ -45,7 +56,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        reviews: reviews,
+        reviews,
         count: reviews.length 
       }),
       { 

@@ -15,7 +15,7 @@ import { ManualReviewForm } from '@/components/ManualReviewForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Integrations() {
-  const [googleApiKey, setGoogleApiKey] = useState('');
+  
   const [googlePlaceId, setGooglePlaceId] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -28,10 +28,10 @@ export default function Integrations() {
 
   // Store Google API credentials and fetch reviews
   const handleGoogleConnect = async () => {
-    if (!googleApiKey || !googlePlaceId) {
+    if (!googlePlaceId) {
       toast({
         title: t('missing_information'),
-        description: t('provide_api_key_place_id'),
+        description: t('enter_place_id'),
         variant: "destructive",
       });
       return;
@@ -52,7 +52,6 @@ export default function Integrations() {
     try {
       // Store credentials securely
       const storeResult = await IntegrationService.storeApiCredentials('google', {
-        api_key: googleApiKey,
         place_id: googlePlaceId
       });
 
@@ -61,7 +60,7 @@ export default function Integrations() {
       }
 
       // Fetch reviews from Google Places API
-      const result = await IntegrationService.fetchGoogleReviews(googleApiKey, googlePlaceId);
+      const result = await IntegrationService.fetchGoogleReviews(googlePlaceId);
       
       if (result.success) {
         toast({
@@ -73,8 +72,7 @@ export default function Integrations() {
         fetchReviews();
         
         // Clear the form
-        setGoogleApiKey('');
-        setGooglePlaceId('');
+      setGooglePlaceId('');
       } else {
         throw new Error(result.error || 'Failed to fetch reviews');
       }
@@ -199,16 +197,6 @@ export default function Integrations() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="google-api-key">{t('google_api_key')}</Label>
-            <Input
-              id="google-api-key"
-              type="password"
-              placeholder={t('enter_google_api_key')}
-              value={googleApiKey}
-              onChange={(e) => setGoogleApiKey(e.target.value)}
-            />
-          </div>
           
           <div className="space-y-2">
             <Label htmlFor="google-place-id">{t('place_id')}</Label>

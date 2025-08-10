@@ -10,11 +10,11 @@ export class IntegrationService {
   /**
    * Google Places API integration
    */
-  static async fetchGoogleReviews(apiKey: string, placeId: string): Promise<{ success: boolean; error?: string; count?: number }> {
+  static async fetchGoogleReviews(placeId: string): Promise<{ success: boolean; error?: string; count?: number }> {
     try {
-      // Call Supabase Edge Function to securely fetch Google reviews
+      // Call Supabase Edge Function (uses server-side secret)
       const { data, error } = await supabase.functions.invoke('fetch-google-reviews', {
-        body: { apiKey, placeId }
+        body: { placeId }
       });
 
       if (error) {
