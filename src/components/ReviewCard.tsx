@@ -44,7 +44,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
   };
 
   return (
-    <Card className="interactive-card border-border hover:border-primary/30 transition-all duration-200 bg-card">
+    <Card className="interactive-card border border-border rounded-xl bg-card shadow-soft hover:shadow-elegant hover:-translate-y-1 transition-all duration-200">
       <CardHeader className="pb-3 md:pb-4 space-y-3">
         <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
@@ -59,12 +59,12 @@ export default function ReviewCard({ review }: ReviewCardProps) {
         </div>
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-2 text-sm">
-          <span className="font-medium text-foreground truncate max-w-[200px] sm:max-w-none">{review.guest_name}</span>
+          <span className="font-semibold text-foreground truncate max-w-[200px] sm:max-w-none">{review.guest_name}</span>
           <span className="text-muted-foreground text-xs sm:text-sm">{formatDate(review.date)}</span>
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-3 md:space-y-4">
+      <CardContent className="p-4 space-y-3 md:space-y-4">
         <p className="text-sm text-foreground leading-relaxed line-clamp-3">
           {review.review_text}
         </p>
