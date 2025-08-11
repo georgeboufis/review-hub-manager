@@ -202,4 +202,9 @@ All colors MUST be HSL.
   .container-responsive {
     @apply w-full max-w-none sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl;
   }
+  
+  /* Cosmic background utility */
+  .cosmic-background {
+    background: var(--gradient-cosmic);
+  }
 }

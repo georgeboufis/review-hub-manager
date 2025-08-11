@@ -24,6 +24,7 @@ import PricingDashboard from "./pages/PricingDashboard";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { Suspense, useEffect } from "react";
+import ConstellationBackground from "./components/background/ConstellationBackground";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const AppContent = () => {
   
   return (
     <ErrorBoundary>
+      <ConstellationBackground />
       <OfflineIndicator />
       <Suspense fallback={<LoadingFallback fullScreen message="Loading application..." />}>
         <Routes>

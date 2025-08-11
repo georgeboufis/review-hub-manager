@@ -201,9 +201,9 @@ export default function ConstellationBackground() {
   return (
     <div>
       {/* Gradient background layer */}
-      <div className="fixed inset-0 -z-20 cosmic-background pointer-events-none" aria-hidden="true" />
+      <div className="fixed inset-0 cosmic-background pointer-events-none" aria-hidden="true" />
       {/* Canvas for stars/lines */}
-      <canvas ref={canvasRef} className="fixed inset-0 -z-10 pointer-events-auto" />
+      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-auto" />
 
       {/* Tooltip */}
       {hovered && (
