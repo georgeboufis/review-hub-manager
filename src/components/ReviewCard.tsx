@@ -37,7 +37,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
       <Star
         key={i}
           className={`h-4 w-4 ${
-            i < rating ? 'text-accent fill-current' : 'text-muted-foreground'
+            i < rating ? 'text-primary-600 fill-current' : 'text-muted-foreground'
           }`}
       />
     ));
