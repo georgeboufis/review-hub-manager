@@ -164,9 +164,8 @@ export default function ConstellationBackground() {
     window.addEventListener('resize', onResize);
 
     const onMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const mx = (e.clientX - rect.left) * dpr;
-      const my = (e.clientY - rect.top) * dpr;
+      const mx = e.clientX * dpr;
+      const my = e.clientY * dpr;
 
       let nearest: StarNode | null = null;
       let nearestDist = 999999;
@@ -189,21 +188,21 @@ export default function ConstellationBackground() {
       }
     };
 
-    canvas.addEventListener('mousemove', onMove);
+    window.addEventListener('mousemove', onMove);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', onResize);
-      canvas.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mousemove', onMove);
     };
   }, [primary, secondary, snippets]);
 
   return (
     <div>
       {/* Gradient background layer */}
-      <div className="fixed inset-0 cosmic-background pointer-events-none" aria-hidden="true" />
+      <div className="fixed inset-0 -z-20 cosmic-background pointer-events-none" aria-hidden="true" />
       {/* Canvas for stars/lines */}
-      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-auto" />
+      <canvas ref={canvasRef} className="fixed inset-0 -z-10 pointer-events-none" />
 
       {/* Tooltip */}
       {hovered && (
