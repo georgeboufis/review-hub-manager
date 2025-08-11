@@ -4,10 +4,11 @@ import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection';
 import { SignupSection } from '@/components/landing/SignupSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
-
+import ConstellationBackground from '@/components/background/ConstellationBackground';
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen relative">
+      <ConstellationBackground />
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />

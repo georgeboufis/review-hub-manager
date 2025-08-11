@@ -61,6 +61,12 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-600)) 100%);
     --gradient-subtle: linear-gradient(135deg, hsl(var(--primary-50)) 0%, hsl(var(--accent)) 100%);
     
+    /* Cosmic gradient tokens for animated constellation background */
+    --cosmic-start: 226 70% 8%;
+    --cosmic-mid: 248 35% 18%;
+    --cosmic-end: 172 80% 22%;
+    --gradient-cosmic: linear-gradient(180deg, hsl(var(--cosmic-start)) 0%, hsl(var(--cosmic-mid)) 55%, hsl(var(--cosmic-end)) 100%);
+    
     /* Shadows */
     --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
     --shadow-soft: 0 4px 20px -4px hsl(var(--primary) / 0.15);
