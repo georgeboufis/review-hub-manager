@@ -35,6 +35,20 @@ All colors MUST be HSL.
     --border: 213 20% 90%;
     --input: 213 20% 90%;
     --ring: 172 100% 37%;
+
+    /* Brand colors */
+    --brand-google: 217 90% 59%;
+    --brand-booking: 214 100% 25%;
+    --brand-airbnb: 358 100% 67%;
+    --brand-tripadvisor: 158 78% 54%;
+
+    /* Sentiment colors */
+    --positive: 158 64% 45%;
+    --positive-foreground: 0 0% 100%;
+    --neutral: 45 100% 51%;
+    --neutral-foreground: 0 0% 10%;
+    --negative: 0 72% 50%;
+    --negative-foreground: 0 0% 100%;
     
     /* Custom design tokens */
     --primary-50: 172 100% 96%;
