@@ -1,4 +1,4 @@
-export function HowItWorksSection() {
+import { useLanguage } from '@/contexts/LanguageContext';
   return (
     <section className="py-20 px-4 bg-muted/30">
       <div className="max-w-4xl mx-auto">

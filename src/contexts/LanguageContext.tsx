@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface LanguageContextType {
   currentLanguage: string;
@@ -146,7 +146,7 @@ const translations = {
     'missing_information': 'Missing Information',
     'provide_api_key_place_id': 'Please provide both API key and Place ID',
     'review_limit_reached': 'Review Limit Reached',
-    'review_limit_reached_description': 'You\'ve reached your',
+    'review_limit_reached_description': "You've reached your",
     'review_limit_plan_text': 'review limit on the Free plan. Upgrade to Pro for unlimited reviews.',
     'google_reviews_imported': 'Google Reviews Imported',
     'successfully_imported_google_reviews': 'Successfully imported',
@@ -160,7 +160,63 @@ const translations = {
     'reviews_from_csv': 'reviews from CSV',
     'import_failed': 'Import Failed',
     'failed_import_csv': 'Failed to import CSV file',
-    'airbnb_reviews_imported': 'Airbnb Reviews Imported'
+    'airbnb_reviews_imported': 'Airbnb Reviews Imported',
+
+    // Navigation and common
+    'pricing_nav': 'Pricing',
+    'platform_booking': 'Booking.com',
+    'platform_airbnb': 'Airbnb',
+    'platform_google': 'Google Reviews',
+    'platform_tripadvisor': 'TripAdvisor',
+    'needs_reply': 'Needs Reply',
+    'your_reply': 'Your Reply',
+    'edit_reply': 'Edit Reply',
+
+    // Landing - Hero
+    'hero_title_line1': 'Manage All Your Guest Reviews',
+    'hero_title_line2': 'In One Place',
+    'hero_subtitle': 'Stop juggling between Google, Booking.com, and Airbnb. Import, organize, and reply to all your guest reviews from a single, powerful dashboard built for Greek hospitality professionals.',
+    'cta_get_early_access': 'Get Early Access',
+    'cta_watch_demo': 'Watch Demo',
+
+    // Landing - Testimonials
+    'testimonials_heading': 'What our users say',
+    'testimonials_subheading': 'See what hospitality professionals across Greece have to say about transforming their review management.',
+
+    // Landing - Features
+    'features_title': 'Everything You Need to Excel at Guest Relations',
+    'features_subtitle': 'Built specifically for hotels, Airbnb hosts, and short-term rental managers in Greece',
+    'feature_google_title': 'Google Reviews Integration',
+    'feature_google_desc': 'Automatically sync your Google My Business reviews. Never miss a guest comment again.',
+    'feature_csv_title': 'Easy CSV Import',
+    'feature_csv_desc': 'Upload your Booking.com and Airbnb reviews with one click. No technical skills required.',
+    'feature_unified_title': 'Unified Review Management',
+    'feature_unified_desc': 'Reply to all reviews from one dashboard. Track pending responses and improve guest satisfaction.',
+
+    // Landing - How It Works
+    'how_title': 'How It Works',
+    'how_connect_title': 'Connect',
+    'how_connect_desc': 'Link your Google My Business account and upload CSV files from Booking.com and Airbnb',
+    'how_import_title': 'Import',
+    'how_import_desc': 'All your reviews are automatically organized in one clean, easy-to-use dashboard',
+    'how_manage_title': 'Manage & Reply',
+    'how_manage_desc': 'Respond to guest reviews efficiently and track your reputation across all platforms',
+
+    // Landing - Signup
+    'signup_title': 'Ready to Transform Your Review Management?',
+    'signup_subtitle': 'Join hundreds of Greek hospitality professionals who are already improving their guest relations.',
+    'email_placeholder': 'Enter your email address',
+    'joining_text': 'Joining...',
+    'join_waitlist_button': 'Join Waitlist',
+    'email_required_title': 'Email Required',
+    'email_required_desc': 'Please enter your email address.',
+    'success_waitlist_title': 'Success!',
+    'success_waitlist_desc': "You've been added to our waitlist. We'll notify you when we launch!",
+
+    // Footer
+    'footer_text': '© 2024 GuestReviews Pro. Built for Greek hospitality professionals.',
+    'footer_contact': 'Contact us: hello@guestreviewspro.com'
+  },
   },
   el: {
     'guest_review_manager': 'Διαχείριση Κριτικών Επισκεπτών',
@@ -305,7 +361,63 @@ const translations = {
     'reviews_from_csv': 'κριτικών από CSV',
     'import_failed': 'Αποτυχία Εισαγωγής',
     'failed_import_csv': 'Αποτυχία εισαγωγής αρχείου CSV',
-    'airbnb_reviews_imported': 'Κριτικές Airbnb Εισήχθησαν'
+    'airbnb_reviews_imported': 'Κριτικές Airbnb Εισήχθησαν',
+
+    // Navigation and common
+    'pricing_nav': 'Τιμολόγηση',
+    'platform_booking': 'Booking.com',
+    'platform_airbnb': 'Airbnb',
+    'platform_google': 'Κριτικές Google',
+    'platform_tripadvisor': 'TripAdvisor',
+    'needs_reply': 'Χρειάζεται απάντηση',
+    'your_reply': 'Η απάντησή σας',
+    'edit_reply': 'Επεξεργασία απάντησης',
+
+    // Landing - Hero
+    'hero_title_line1': 'Διαχειριστείτε όλες τις κριτικές των επισκεπτών σας',
+    'hero_title_line2': 'Σε ένα μέρος',
+    'hero_subtitle': 'Σταματήστε να πηγαινοέρχεστε μεταξύ Google, Booking.com και Airbnb. Εισάγετε, οργανώστε και απαντήστε σε όλες τις κριτικές από έναν ενιαίο, ισχυρό πίνακα που έχει σχεδιαστεί για τους επαγγελματίες φιλοξενίας στην Ελλάδα.',
+    'cta_get_early_access': 'Απόκτηση Πρόσβασης',
+    'cta_watch_demo': 'Δείτε Demo',
+
+    // Landing - Testimonials
+    'testimonials_heading': 'Τι λένε οι χρήστες μας',
+    'testimonials_subheading': 'Δείτε τι λένε οι επαγγελματίες φιλοξενίας σε όλη την Ελλάδα για τον τρόπο που μεταμορφώνουν τη διαχείριση κριτικών.',
+
+    // Landing - Features
+    'features_title': 'Ό,τι χρειάζεστε για να διαπρέψετε στις σχέσεις με τους επισκέπτες',
+    'features_subtitle': 'Σχεδιασμένο ειδικά για ξενοδοχεία, hosts του Airbnb και διαχειριστές βραχυχρόνιων μισθώσεων στην Ελλάδα',
+    'feature_google_title': 'Ενσωμάτωση Κριτικών Google',
+    'feature_google_desc': 'Συγχρονίστε αυτόματα τις κριτικές Google My Business. Μην χάσετε ποτέ ξανά σχόλιο επισκέπτη.',
+    'feature_csv_title': 'Εύκολη Εισαγωγή CSV',
+    'feature_csv_desc': 'Ανεβάστε τις κριτικές σας από Booking.com και Airbnb με ένα κλικ. Χωρίς τεχνικές γνώσεις.',
+    'feature_unified_title': 'Ενοποιημένη Διαχείριση Κριτικών',
+    'feature_unified_desc': 'Απαντήστε σε όλες τις κριτικές από έναν πίνακα. Παρακολουθήστε εκκρεμείς απαντήσεις και βελτιώστε την ικανοποίηση των επισκεπτών.',
+
+    // Landing - How It Works
+    'how_title': 'Πώς Λειτουργεί',
+    'how_connect_title': 'Σύνδεση',
+    'how_connect_desc': 'Συνδέστε τον λογαριασμό σας Google My Business και ανεβάστε αρχεία CSV από Booking.com και Airbnb',
+    'how_import_title': 'Εισαγωγή',
+    'how_import_desc': 'Όλες οι κριτικές σας οργανώνονται αυτόματα σε έναν καθαρό, εύχρηστο πίνακα',
+    'how_manage_title': 'Διαχείριση & Απάντηση',
+    'how_manage_desc': 'Απαντήστε αποτελεσματικά σε κριτικές και παρακολουθήστε τη φήμη σας σε όλες τις πλατφόρμες',
+
+    // Landing - Signup
+    'signup_title': 'Έτοιμοι να μεταμορφώσετε τη διαχείριση κριτικών σας;',
+    'signup_subtitle': 'Ενταχθείτε σε εκατοντάδες επαγγελματίες φιλοξενίας που ήδη βελτιώνουν τις σχέσεις με τους επισκέπτες.',
+    'email_placeholder': 'Εισάγετε το email σας',
+    'joining_text': 'Γίνεται εγγραφή...',
+    'join_waitlist_button': 'Εγγραφή στη λίστα αναμονής',
+    'email_required_title': 'Απαιτείται Email',
+    'email_required_desc': 'Παρακαλώ εισάγετε τη διεύθυνση email σας.',
+    'success_waitlist_title': 'Επιτυχία!',
+    'success_waitlist_desc': 'Προστέθηκατε στη λίστα αναμονής. Θα σας ενημερώσουμε όταν λανσάρουμε!',
+
+    // Footer
+    'footer_text': '© 2024 GuestReviews Pro. Δημιουργήθηκε για επαγγελματίες φιλοξενίας στην Ελλάδα.',
+    'footer_contact': 'Επικοινωνία: hello@guestreviewspro.com'
+  },
   },
   fr: {
     'guest_review_manager': 'Gestionnaire d\'Avis Client',
@@ -444,10 +556,18 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
+  const [currentLanguage, setCurrentLanguage] = useState(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? localStorage.getItem('lang') : null;
+      return saved || 'en';
+    } catch {
+      return 'en';
+    }
+  });
 
   const setLanguage = (languageCode: string) => {
     setCurrentLanguage(languageCode);
+    try { localStorage.setItem('lang', languageCode); } catch {}
   };
 
   const t = (key: string): string => {

@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Star, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 const getNavigation = (t: (key: string) => string) => [{
   name: t('home'),
   href: '/'
@@ -16,13 +16,13 @@ const getNavigation = (t: (key: string) => string) => [{
   name: t('reviews'),
   href: '/reviews'
 }, {
-  name: 'Analytics',
+  name: t('analytics_title'),
   href: '/analytics'
 }, {
-  name: 'Integrations',
+  name: t('platform_integrations'),
   href: '/integrations'
 }, {
-  name: 'Pricing',
+  name: t('pricing_nav'),
   href: '/pricing'
 }, {
   name: t('settings'),
@@ -33,7 +33,7 @@ const getNavigation = (t: (key: string) => string) => [{
 }];
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'el', name: 'Greek', flag: '🇬🇷' }
 ];
 export default function Layout() {
@@ -58,6 +58,11 @@ export default function Layout() {
     setSelectedLanguage(language);
     setLanguage(language.code);
   };
+
+  useEffect(() => {
+    const lang = languages.find(l => l.code === currentLanguage) || languages[0];
+    setSelectedLanguage(lang);
+  }, [currentLanguage]);
   
   const handleSignOut = async () => {
     const {
@@ -218,7 +223,7 @@ export default function Layout() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+      <main key={currentLanguage} className="animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         <Outlet />
       </main>
     </div>;
