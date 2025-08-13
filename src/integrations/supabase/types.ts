@@ -203,6 +203,39 @@ export type Database = {
         }
         Relationships: []
       }
+      Reviews: {
+        Row: {
+          comment: string | null
+          date: string | null
+          id: string
+          place_id: string | null
+          rating: number | null
+          reviewer_name: string | null
+          reviewer_photo: string | null
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          date?: string | null
+          id?: string
+          place_id?: string | null
+          rating?: number | null
+          reviewer_name?: string | null
+          reviewer_photo?: string | null
+          user_id?: string
+        }
+        Update: {
+          comment?: string | null
+          date?: string | null
+          id?: string
+          place_id?: string | null
+          rating?: number | null
+          reviewer_name?: string | null
+          reviewer_photo?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string

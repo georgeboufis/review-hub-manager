@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 200 19% 18%;
 
-    --primary: 172 100% 37%; /* #00BFA6 */
+    --primary: 213 94% 68%; /* #4285F4 - Beautiful blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 187 72% 71%; /* #80DEEA */
-    --secondary-foreground: 200 19% 18%;
+    --secondary: 213 90% 85%; /* Light blue */
+    --secondary-foreground: 213 60% 20%;
 
-    --muted: 210 20% 95%;
-    --muted-foreground: 200 10% 40%;
+    --muted: 213 20% 95%;
+    --muted-foreground: 213 10% 40%;
 
-    --accent: 14 100% 63%; /* #FF7043 */
+    --accent: 213 100% 50%; /* Vibrant blue accent */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,7 +34,7 @@ All colors MUST be HSL.
 
     --border: 213 20% 90%;
     --input: 213 20% 90%;
-    --ring: 172 100% 37%;
+    --ring: 213 94% 68%;
 
     /* Brand colors */
     --brand-google: 217 90% 59%;
@@ -50,21 +50,21 @@ All colors MUST be HSL.
     --negative: 0 72% 50%;
     --negative-foreground: 0 0% 100%;
     
-    /* Custom design tokens */
-    --primary-50: 172 100% 96%;
-    --primary-100: 172 100% 90%;
-    --primary-500: 172 100% 37%;
-    --primary-600: 172 100% 32%;
-    --primary-900: 172 100% 20%;
+    /* Custom design tokens - Blue theme */
+    --primary-50: 213 100% 97%;
+    --primary-100: 213 100% 92%;
+    --primary-500: 213 94% 68%;
+    --primary-600: 213 94% 60%;
+    --primary-900: 213 94% 35%;
     
-    /* Gradients */
+    /* Gradients - Blue themed */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-600)) 100%);
     --gradient-subtle: linear-gradient(135deg, hsl(var(--primary-50)) 0%, hsl(var(--accent)) 100%);
     
-    /* Cosmic gradient tokens for animated constellation background */
-    --cosmic-start: 226 70% 8%;
-    --cosmic-mid: 248 35% 18%;
-    --cosmic-end: 172 80% 22%;
+    /* Blue cosmic gradient tokens for animated constellation background */
+    --cosmic-start: 213 70% 8%;
+    --cosmic-mid: 213 45% 18%;
+    --cosmic-end: 213 80% 35%;
     --gradient-cosmic: linear-gradient(180deg, hsl(var(--cosmic-start)) 0%, hsl(var(--cosmic-mid)) 55%, hsl(var(--cosmic-end)) 100%);
     
     /* Shadows */
@@ -84,15 +84,15 @@ All colors MUST be HSL.
     --sidebar-background: 213 36% 97%;
     --sidebar-foreground: 200 19% 18%;
 
-    --sidebar-primary: 172 100% 37%;
+    --sidebar-primary: 213 94% 68%;
     --sidebar-primary-foreground: 0 0% 100%;
 
-    --sidebar-accent: 210 20% 95%;
-    --sidebar-accent-foreground: 200 19% 18%;
+    --sidebar-accent: 213 20% 95%;
+    --sidebar-accent-foreground: 213 60% 20%;
 
     --sidebar-border: 213 20% 90%;
 
-    --sidebar-ring: 172 100% 37%;
+    --sidebar-ring: 213 94% 68%;
   }
 
   .dark {
