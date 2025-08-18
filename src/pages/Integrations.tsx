@@ -179,7 +179,7 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Globe className="h-5 w-5 text-green-600" />
-            <CardTitle>GOOGLE REVIEWS</CardTitle>
+            <CardTitle className="text-sm font-semibold">GOOGLE REVIEWS</CardTitle>
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
               Api Available
             </Badge>
@@ -215,7 +215,7 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-blue-600" />
-            <CardTitle>BOOKING REVIEWS</CardTitle>
+            <CardTitle className="text-sm">BOOKING REVIEWS</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -242,7 +242,7 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-red-600" />
-            <CardTitle>AIRBNB REVIEWS</CardTitle>
+            <CardTitle className="text-sm font-semibold">AIRBNB REVIEWS</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
