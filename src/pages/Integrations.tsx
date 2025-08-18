@@ -245,22 +245,12 @@ export default function Integrations() {
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-blue-600" />
             <CardTitle>{t('booking_reviews')}</CardTitle>
-            <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-              {t('manual_import')}
-            </Badge>
           </div>
           <CardDescription>
             {t('booking_description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              <strong>{t('no_api_access')}</strong> {t('booking_restrictions')}
-            </AlertDescription>
-          </Alert>
-
           <div className="space-y-2">
             <Label htmlFor="booking-csv">{t('upload_booking_csv')}</Label>
             <Input
@@ -302,22 +292,12 @@ export default function Integrations() {
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-red-600" />
             <CardTitle>{t('airbnb_reviews')}</CardTitle>
-            <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-              {t('manual_import')}
-            </Badge>
           </div>
           <CardDescription>
             {t('airbnb_description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              <strong>{t('api_discontinued')}</strong> {t('airbnb_restrictions')}
-            </AlertDescription>
-          </Alert>
-
           <div className="space-y-2">
             <Label htmlFor="airbnb-csv">{t('upload_airbnb_csv')}</Label>
             <Input
@@ -378,29 +358,6 @@ export default function Integrations() {
         </CardContent>
       </Card>
 
-      {/* Security & Legal Notice */}
-      <Card className="border-amber-200 bg-amber-50">
-        <CardHeader>
-          <div className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-amber-600" />
-            <CardTitle className="text-amber-800">{t('security_legal_considerations')}</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm text-amber-700">
-          <div>
-            <strong>{t('api_keys_security')}</strong> {t('api_keys_security_description')}
-          </div>
-          <div>
-            <strong>{t('data_compliance')}</strong> {t('data_compliance_description')}
-          </div>
-          <div>
-            <strong>{t('terms_of_service')}</strong> {t('terms_service_description')}
-          </div>
-          <div>
-            <strong>{t('data_privacy')}</strong> {t('data_privacy_description')}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Manual Review Form Modal */}
       <ManualReviewForm
