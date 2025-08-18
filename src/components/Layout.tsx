@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Star, Menu, X } from 'lucide-react';
+import { Star, Menu, X, BarChart3 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 const getNavigation = (t: (key: string) => string) => [{
   name: t('home'),
@@ -17,7 +17,8 @@ const getNavigation = (t: (key: string) => string) => [{
   href: '/reviews'
 }, {
   name: t('analytics_title'),
-  href: '/analytics'
+  href: '/analytics',
+  icon: BarChart3
 }, {
   name: t('platform_integrations'),
   href: '/integrations'
@@ -209,12 +210,13 @@ export default function Layout() {
                   key={item.name} 
                   to={item.href} 
                   className={cn(
-                    'text-sm font-medium transition-all duration-200 px-3 py-2 rounded-md touch-target whitespace-nowrap flex-shrink-0',
+                    'text-sm font-medium transition-all duration-200 px-3 py-2 rounded-md touch-target whitespace-nowrap flex-shrink-0 flex items-center gap-1.5',
                     location.pathname === item.href 
                       ? 'text-primary bg-primary-50 border border-primary/20 shadow-sm' 
                       : 'text-muted-foreground hover:text-primary hover:bg-primary-50/50'
                   )}
                 >
+                  {item.icon && <item.icon size={16} />}
                   {item.name}
                 </Link>
               ))}
