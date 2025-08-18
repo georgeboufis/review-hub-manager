@@ -42,6 +42,8 @@ export default function Reviews() {
 
   // Deduplication and filtering logic
   const filteredReviews = (() => {
+    console.log('Filtering reviews - Total:', reviews.length, 'Platform:', platformFilter, 'Rating:', ratingFilter, 'Search:', searchTerm);
+    
     // 1. Deduplication - remove duplicate reviews based on unique combination of guest_name, platform, review_text, and date
     const uniqueReviews = reviews.filter((review, index, self) => 
       index === self.findIndex(r => 
@@ -51,54 +53,64 @@ export default function Reviews() {
         r.date === review.date
       )
     );
+    
+    console.log('After deduplication:', uniqueReviews.length);
 
     // 2. Apply filters
-    return uniqueReviews.filter(review => {
+    const filtered = uniqueReviews.filter(review => {
       // Search filter
-      const matchesSearch = review.review_text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           review.guest_name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = searchTerm === '' || 
+        review.review_text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        review.guest_name.toLowerCase().includes(searchTerm.toLowerCase());
       
       // Source filtering - exact platform matching
-      let matchesPlatform = true;
-      if (platformFilter !== 'all') {
-        switch(platformFilter) {
-          case 'google':
-            matchesPlatform = review.platform === 'google';
-            break;
-          case 'booking':
-            matchesPlatform = review.platform === 'booking';
-            break;
-          case 'airbnb':
-            matchesPlatform = review.platform === 'airbnb';
-            break;
-          case 'tripadvisor':
-            matchesPlatform = review.platform === 'tripadvisor';
-            break;
-          default:
-            matchesPlatform = true;
-        }
+      let matchesPlatform = platformFilter === 'all';
+      if (!matchesPlatform) {
+        matchesPlatform = review.platform === platformFilter;
       }
       
       // Star rating filtering - exact rating matching
-      let matchesRating = true;
-      if (ratingFilter !== 'all') {
-        if (ratingFilter === 'high') {
-          matchesRating = review.rating >= 4;
-        } else if (ratingFilter === 'medium') {
-          matchesRating = review.rating === 3;
-        } else if (ratingFilter === 'low') {
-          matchesRating = review.rating <= 2;
+      let matchesRating = ratingFilter === 'all';
+      if (!matchesRating) {
+        // Handle specific star values (1, 2, 3, 4, 5)
+        const starValue = parseInt(ratingFilter);
+        if (!isNaN(starValue)) {
+          matchesRating = review.rating === starValue;
         } else {
-          // If it's a specific star value (1, 2, 3, 4, 5)
-          const starValue = parseInt(ratingFilter);
-          if (!isNaN(starValue)) {
-            matchesRating = review.rating === starValue;
+          // Handle grouped options
+          switch(ratingFilter) {
+            case 'high':
+              matchesRating = review.rating >= 4;
+              break;
+            case 'medium':
+              matchesRating = review.rating === 3;
+              break;
+            case 'low':
+              matchesRating = review.rating <= 2;
+              break;
+            default:
+              matchesRating = true;
           }
         }
       }
       
-      return matchesSearch && matchesPlatform && matchesRating;
+      const passes = matchesSearch && matchesPlatform && matchesRating;
+      if (!passes) {
+        console.log('Review filtered out:', {
+          guest: review.guest_name,
+          platform: review.platform,
+          rating: review.rating,
+          matchesSearch,
+          matchesPlatform,
+          matchesRating
+        });
+      }
+      
+      return passes;
     });
+    
+    console.log('Final filtered results:', filtered.length);
+    return filtered;
   })();
 
   const pendingCount = reviews.filter(review => !review.replied).length;
