@@ -26,9 +26,6 @@ const getNavigation = (t: (key: string) => string) => [{
 }, {
   name: t('settings'),
   href: '/settings'
-}, {
-  name: t('contact'),
-  href: '/contact'
 }];
 
 const languages = [

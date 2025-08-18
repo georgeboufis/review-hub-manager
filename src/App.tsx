@@ -17,7 +17,7 @@ import Dashboard from "./pages/Dashboard";
 import Reviews from "./pages/Reviews";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
-import Contact from "./pages/Contact";
+
 import ReplyPage from "./pages/ReplyPage";
 import Integrations from "./pages/Integrations";
 import PricingDashboard from "./pages/PricingDashboard";
@@ -68,7 +68,7 @@ const AppContent = () => {
             <Route path="integrations" element={<Integrations />} />
             <Route path="pricing" element={<PricingDashboard />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="contact" element={<Contact />} />
+            
             <Route path="reply/:reviewId" element={<ReplyPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
