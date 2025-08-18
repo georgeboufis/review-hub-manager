@@ -281,7 +281,7 @@ export default function Login() {
                     <span className="ml-2">{isLogin ? 'Signing in…' : 'Creating account…'}</span>
                   </> : <span>{isLogin ? 'Sign In' : 'Create an Account'}</span>}
               </Button>
-              <Button type="button" onClick={() => setIsLogin(!isLogin)} variant="auth" aria-label={isLogin ? 'Switch to create account' : 'Switch to sign in'} className="w-full h-12 bg-blue-400 hover:bg-blue-300 text-zinc-950 font-normal text-center rounded-2xl">
+              <Button type="button" onClick={() => setIsLogin(!isLogin)} variant="auth" aria-label={isLogin ? 'Switch to create account' : 'Switch to sign in'} className="w-full h-12 text-zinc-950 font-normal text-center rounded-2xl bg-white">
                 {isLogin ? 'Create an Account' : 'Sign In'}
               </Button>
             </div>
