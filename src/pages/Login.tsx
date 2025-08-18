@@ -15,6 +15,8 @@ export default function Login() {
   } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -32,6 +34,7 @@ export default function Login() {
     signUp,
     signInWithGoogle,
     signInWithApple,
+    resetPassword,
     user
   } = useAuth();
 
@@ -155,6 +158,51 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const sanitizedEmail = sanitizeEmail(forgotPasswordEmail);
+      if (!sanitizedEmail) {
+        toast({
+          title: "Invalid email",
+          description: "Please enter a valid email address.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const { error } = await resetPassword(sanitizedEmail);
+      if (error) {
+        const sanitizedMessage = sanitizeErrorMessage(error);
+        toast({
+          title: "Password reset failed",
+          description: sanitizedMessage,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Password reset email sent",
+          description: "Check your email for instructions to reset your password.",
+        });
+        setShowForgotPassword(false);
+        setForgotPasswordEmail('');
+      }
+    } catch (error) {
+      const sanitizedMessage = sanitizeErrorMessage(error);
+      toast({
+        title: "An error occurred",
+        description: sanitizedMessage,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
@@ -313,10 +361,61 @@ export default function Login() {
           </div>
 
           {isLogin && <div className="mt-6 text-center">
-              <button type="button" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">
+              <button 
+                type="button" 
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+              >
                 Forgot your password?
               </button>
             </div>}
+
+          {/* Forgot Password Modal */}
+          {showForgotPassword && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-background rounded-lg shadow-elegant p-6 w-full max-w-md">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Reset Password</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Enter your email address and we'll send you a link to reset your password.
+                </p>
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="resetEmail" className="text-sm font-medium text-foreground">Email</Label>
+                    <Input 
+                      id="resetEmail" 
+                      type="email" 
+                      placeholder="host@example.com" 
+                      value={forgotPasswordEmail}
+                      onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                      required 
+                      className="rounded-md border border-input bg-background focus:border-ring focus:ring-2 focus:ring-ring/20 transition-all duration-200 px-3 py-2" 
+                    />
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => {
+                        setShowForgotPassword(false);
+                        setForgotPasswordEmail('');
+                      }}
+                      className="flex-1"
+                      disabled={isLoading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      className="flex-1"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Sending...' : 'Send Reset Link'}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 text-center text-sm text-muted-foreground">
