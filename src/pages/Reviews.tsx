@@ -40,17 +40,66 @@ export default function Reviews() {
     }
   }, [loading, reviews.length]);
 
-  const filteredReviews = reviews.filter(review => {
-    const matchesSearch = review.review_text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         review.guest_name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesPlatform = platformFilter === 'all' || review.platform === platformFilter;
-    const matchesRating = ratingFilter === 'all' || 
-                         (ratingFilter === 'high' && review.rating >= 4) ||
-                         (ratingFilter === 'medium' && review.rating === 3) ||
-                         (ratingFilter === 'low' && review.rating <= 2);
-    
-    return matchesSearch && matchesPlatform && matchesRating;
-  });
+  // Deduplication and filtering logic
+  const filteredReviews = (() => {
+    // 1. Deduplication - remove duplicate reviews based on unique combination of guest_name, platform, review_text, and date
+    const uniqueReviews = reviews.filter((review, index, self) => 
+      index === self.findIndex(r => 
+        r.guest_name === review.guest_name &&
+        r.platform === review.platform &&
+        r.review_text === review.review_text &&
+        r.date === review.date
+      )
+    );
+
+    // 2. Apply filters
+    return uniqueReviews.filter(review => {
+      // Search filter
+      const matchesSearch = review.review_text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           review.guest_name.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // Source filtering - exact platform matching
+      let matchesPlatform = true;
+      if (platformFilter !== 'all') {
+        switch(platformFilter) {
+          case 'google':
+            matchesPlatform = review.platform === 'google';
+            break;
+          case 'booking':
+            matchesPlatform = review.platform === 'booking';
+            break;
+          case 'airbnb':
+            matchesPlatform = review.platform === 'airbnb';
+            break;
+          case 'tripadvisor':
+            matchesPlatform = review.platform === 'tripadvisor';
+            break;
+          default:
+            matchesPlatform = true;
+        }
+      }
+      
+      // Star rating filtering - exact rating matching
+      let matchesRating = true;
+      if (ratingFilter !== 'all') {
+        if (ratingFilter === 'high') {
+          matchesRating = review.rating >= 4;
+        } else if (ratingFilter === 'medium') {
+          matchesRating = review.rating === 3;
+        } else if (ratingFilter === 'low') {
+          matchesRating = review.rating <= 2;
+        } else {
+          // If it's a specific star value (1, 2, 3, 4, 5)
+          const starValue = parseInt(ratingFilter);
+          if (!isNaN(starValue)) {
+            matchesRating = review.rating === starValue;
+          }
+        }
+      }
+      
+      return matchesSearch && matchesPlatform && matchesRating;
+    });
+  })();
 
   const pendingCount = reviews.filter(review => !review.replied).length;
 
@@ -148,6 +197,11 @@ export default function Reviews() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('all_ratings')}</SelectItem>
+                <SelectItem value="5">5 Stars</SelectItem>
+                <SelectItem value="4">4 Stars</SelectItem>
+                <SelectItem value="3">3 Stars</SelectItem>
+                <SelectItem value="2">2 Stars</SelectItem>
+                <SelectItem value="1">1 Star</SelectItem>
                 <SelectItem value="high">4-5 Stars</SelectItem>
                 <SelectItem value="medium">3 Stars</SelectItem>
                 <SelectItem value="low">1-2 Stars</SelectItem>
