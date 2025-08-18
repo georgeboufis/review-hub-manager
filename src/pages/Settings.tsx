@@ -10,42 +10,42 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { createCheckoutSession, createCustomerPortalSession, getReviewCount } from '@/services/subscriptionService';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-
-const platforms = [
-  {
-    id: 'booking',
-    name: 'Booking.com',
-    color: 'bg-blue-500',
-    connected: true,
-    lastSync: '2 hours ago'
-  },
-  {
-    id: 'airbnb',
-    name: 'Airbnb',
-    color: 'bg-red-500',
-    connected: true,
-    lastSync: '1 hour ago'
-  },
-  {
-    id: 'google',
-    name: 'Google Reviews',
-    color: 'bg-green-500',
-    connected: false,
-    lastSync: 'Never'
-  },
-  {
-    id: 'tripadvisor',
-    name: 'TripAdvisor',
-    color: 'bg-orange-500',
-    connected: false,
-    lastSync: 'Never'
-  }
-];
-
+const platforms = [{
+  id: 'booking',
+  name: 'Booking.com',
+  color: 'bg-blue-500',
+  connected: true,
+  lastSync: '2 hours ago'
+}, {
+  id: 'airbnb',
+  name: 'Airbnb',
+  color: 'bg-red-500',
+  connected: true,
+  lastSync: '1 hour ago'
+}, {
+  id: 'google',
+  name: 'Google Reviews',
+  color: 'bg-green-500',
+  connected: false,
+  lastSync: 'Never'
+}, {
+  id: 'tripadvisor',
+  name: 'TripAdvisor',
+  color: 'bg-orange-500',
+  connected: false,
+  lastSync: 'Never'
+}];
 export default function Settings() {
-  const { t } = useLanguage();
-  const { toast } = useToast();
-  const { subscriptionStatus, refreshSubscription } = useAuth();
+  const {
+    t
+  } = useLanguage();
+  const {
+    toast
+  } = useToast();
+  const {
+    subscriptionStatus,
+    refreshSubscription
+  } = useAuth();
   const [notifications, setNotifications] = useState({
     newReviews: true,
     lowRatings: true,
@@ -54,7 +54,6 @@ export default function Settings() {
   });
   const [reviewCount, setReviewCount] = useState(0);
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     const loadData = async () => {
       const count = await getReviewCount();
@@ -63,30 +62,30 @@ export default function Settings() {
     };
     loadData();
   }, [refreshSubscription]);
-
   const handleSaveSettings = () => {
     toast({
       title: "Settings saved",
-      description: "Your preferences have been updated successfully.",
+      description: "Your preferences have been updated successfully."
     });
   };
-
   const handleConnectPlatform = (platformId: string) => {
     toast({
       title: "Platform connection",
-      description: `Integration with ${platforms.find(p => p.id === platformId)?.name} will be available soon.`,
+      description: `Integration with ${platforms.find(p => p.id === platformId)?.name} will be available soon.`
     });
   };
-
   const handleUpgrade = async () => {
     setLoading(true);
     try {
-      const { url, error } = await createCheckoutSession();
+      const {
+        url,
+        error
+      } = await createCheckoutSession();
       if (error) {
         toast({
           title: "Error",
           description: error,
-          variant: "destructive",
+          variant: "destructive"
         });
       } else if (url) {
         window.open(url, '_blank');
@@ -95,21 +94,23 @@ export default function Settings() {
       toast({
         title: "Error",
         description: "Failed to create checkout session",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
     setLoading(false);
   };
-
   const handleManageSubscription = async () => {
     setLoading(true);
     try {
-      const { url, error } = await createCustomerPortalSession();
+      const {
+        url,
+        error
+      } = await createCustomerPortalSession();
       if (error) {
         toast({
           title: "Error",
           description: error,
-          variant: "destructive",
+          variant: "destructive"
         });
       } else if (url) {
         window.open(url, '_blank');
@@ -118,14 +119,12 @@ export default function Settings() {
       toast({
         title: "Error",
         description: "Failed to open customer portal",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
     setLoading(false);
   };
-
-  return (
-    <div className="max-w-4xl mx-auto space-y-8">
+  return <div className="max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Settings</h1>
         <p className="text-muted-foreground mt-2">Manage your platform connections and notification preferences.</p>
@@ -142,53 +141,31 @@ export default function Settings() {
               <div>
                 <h3 className="font-medium">Current Plan</h3>
                 <p className="text-sm text-muted-foreground">
-                  {subscriptionStatus.subscribed ? (
-                    <>You are on the <strong>Pro Plan</strong> with unlimited reviews</>
-                  ) : (
-                    <>You are on the <strong>Free Plan</strong> ({reviewCount}/10 reviews used)</>
-                  )}
+                  {subscriptionStatus.subscribed ? <>You are on the <strong>Pro Plan</strong> with unlimited reviews</> : <>You are on the <strong>Free Plan</strong> ({reviewCount}/10 reviews used)</>}
                 </p>
-                {subscriptionStatus.subscription_end && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                {subscriptionStatus.subscription_end && <p className="text-xs text-muted-foreground mt-1">
                     Next billing: {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
-                  </p>
-                )}
+                  </p>}
               </div>
               
               <div className="flex items-center space-x-3">
                 <Badge variant={subscriptionStatus.subscribed ? "secondary" : "outline"}>
                   {subscriptionStatus.subscribed ? 'Pro Plan' : 'Free Plan'}
                 </Badge>
-                {subscriptionStatus.subscribed ? (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleManageSubscription}
-                    disabled={loading}
-                  >
+                {subscriptionStatus.subscribed ? <Button variant="outline" size="sm" onClick={handleManageSubscription} disabled={loading}>
                     {loading ? <LoadingSpinner size="sm" /> : 'Manage Subscription'}
-                  </Button>
-                ) : (
-                  <Button 
-                    variant="professional" 
-                    size="sm" 
-                    onClick={handleUpgrade}
-                    disabled={loading}
-                  >
+                  </Button> : <Button variant="professional" size="sm" onClick={handleUpgrade} disabled={loading}>
                     {loading ? <LoadingSpinner size="sm" /> : 'Upgrade to Pro - €29/month'}
-                  </Button>
-                )}
+                  </Button>}
               </div>
             </div>
             
-            {!subscriptionStatus.subscribed && reviewCount >= 10 && (
-              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            {!subscriptionStatus.subscribed && reviewCount >= 10 && <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <h4 className="font-medium text-yellow-800">Review Limit Reached</h4>
                 <p className="text-sm text-yellow-700 mt-1">
                   You've reached the 10-review limit for the free plan. Upgrade to Pro for unlimited reviews.
                 </p>
-              </div>
-            )}
+              </div>}
           </div>
         </CardContent>
       </Card>
@@ -200,8 +177,7 @@ export default function Settings() {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {platforms.map((platform) => (
-              <div key={platform.id} className="flex items-center justify-between p-4 border rounded-lg">
+            {platforms.map(platform => <div key={platform.id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className={`w-10 h-10 ${platform.color} rounded-lg flex items-center justify-center`}>
                     <span className="text-white font-bold text-sm">
@@ -220,16 +196,11 @@ export default function Settings() {
                   <Badge variant={platform.connected ? "secondary" : "outline"}>
                     {platform.connected ? 'Connected' : 'Disconnected'}
                   </Badge>
-                  <Button 
-                    variant={platform.connected ? "outline" : "professional"}
-                    size="sm"
-                    onClick={() => handleConnectPlatform(platform.id)}
-                  >
+                  <Button variant={platform.connected ? "outline" : "professional"} size="sm" onClick={() => handleConnectPlatform(platform.id)}>
                     {platform.connected ? 'Disconnect' : 'Connect'}
                   </Button>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </CardContent>
       </Card>
@@ -246,13 +217,10 @@ export default function Settings() {
                 <Label htmlFor="new-reviews">New Review Notifications</Label>
                 <p className="text-sm text-muted-foreground">Get notified when you receive new reviews</p>
               </div>
-              <Switch
-                id="new-reviews"
-                checked={notifications.newReviews}
-                onCheckedChange={(checked) => 
-                  setNotifications(prev => ({ ...prev, newReviews: checked }))
-                }
-              />
+              <Switch id="new-reviews" checked={notifications.newReviews} onCheckedChange={checked => setNotifications(prev => ({
+              ...prev,
+              newReviews: checked
+            }))} />
             </div>
 
             <div className="flex items-center justify-between">
@@ -260,13 +228,10 @@ export default function Settings() {
                 <Label htmlFor="low-ratings">Low Rating Alerts</Label>
                 <p className="text-sm text-muted-foreground">Get immediate alerts for reviews with 3 stars or below</p>
               </div>
-              <Switch
-                id="low-ratings"
-                checked={notifications.lowRatings}
-                onCheckedChange={(checked) => 
-                  setNotifications(prev => ({ ...prev, lowRatings: checked }))
-                }
-              />
+              <Switch id="low-ratings" checked={notifications.lowRatings} onCheckedChange={checked => setNotifications(prev => ({
+              ...prev,
+              lowRatings: checked
+            }))} />
             </div>
 
             <div className="flex items-center justify-between">
@@ -274,13 +239,10 @@ export default function Settings() {
                 <Label htmlFor="reply-reminders">Reply Reminders</Label>
                 <p className="text-sm text-muted-foreground">Remind me to reply to pending reviews</p>
               </div>
-              <Switch
-                id="reply-reminders"
-                checked={notifications.replyReminders}
-                onCheckedChange={(checked) => 
-                  setNotifications(prev => ({ ...prev, replyReminders: checked }))
-                }
-              />
+              <Switch id="reply-reminders" checked={notifications.replyReminders} onCheckedChange={checked => setNotifications(prev => ({
+              ...prev,
+              replyReminders: checked
+            }))} />
             </div>
 
             <div className="flex items-center justify-between">
@@ -288,54 +250,21 @@ export default function Settings() {
                 <Label htmlFor="weekly-reports">Weekly Reports</Label>
                 <p className="text-sm text-muted-foreground">Receive weekly summary reports via email</p>
               </div>
-              <Switch
-                id="weekly-reports"
-                checked={notifications.weeklyReports}
-                onCheckedChange={(checked) => 
-                  setNotifications(prev => ({ ...prev, weeklyReports: checked }))
-                }
-              />
+              <Switch id="weekly-reports" checked={notifications.weeklyReports} onCheckedChange={checked => setNotifications(prev => ({
+              ...prev,
+              weeklyReports: checked
+            }))} />
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Profile Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile Settings</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="business-name">Business Name</Label>
-              <Input id="business-name" placeholder="Your business name" defaultValue="Cozy Rentals" />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" placeholder="your@email.com" defaultValue="host@cozyrentals.com" />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input id="phone" placeholder="+1 (555) 123-4567" defaultValue="+1 (555) 123-4567" />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone</Label>
-              <Input id="timezone" placeholder="UTC-5" defaultValue="UTC-5 (Eastern Time)" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button variant="professional" onClick={handleSaveSettings}>
-          Save Settings
-        </Button>
+        
       </div>
-    </div>
-  );
+    </div>;
 }
