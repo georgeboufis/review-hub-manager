@@ -171,7 +171,7 @@ export default function Integrations() {
   };
   return <div className="container mx-auto py-8 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">PLATFORM INTEGRATIONS</h1>
+        <h1 className="text-3xl text-center font-extrabold">Platforms_Integrations</h1>
       </div>
 
       {/* Google Reviews Integration */}
@@ -188,7 +188,7 @@ export default function Integrations() {
         <CardContent className="space-y-4">
           
           <div className="space-y-2">
-            <Label htmlFor="google-place-id">Place Id</Label>
+            <Label htmlFor="google-place-id" className="bg-slate-50">Place_ID</Label>
             <Input id="google-place-id" placeholder="Enter Place Id" value={googlePlaceId} onChange={e => setGooglePlaceId(e.target.value)} />
             <p className="text-xs text-muted-foreground">
               Find Your Place Id Text{' '}
@@ -198,7 +198,7 @@ export default function Integrations() {
             </p>
           </div>
 
-          <Button onClick={handleGoogleConnect} disabled={isConnecting} className="w-full">
+          <Button onClick={handleGoogleConnect} disabled={isConnecting} className="w-full bg-blue-500 hover:bg-blue-400 rounded-2xl font-semibold text-zinc-950 text-sm">
             {isConnecting ? <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Fetching Reviews
@@ -220,14 +220,12 @@ export default function Integrations() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="booking-csv">Upload Booking Csv</Label>
+            <Label htmlFor="booking-csv">Booking_CSV</Label>
             <Input id="booking-csv" ref={bookingFileRef} type="file" accept=".csv" className="cursor-pointer" />
-            <p className="text-xs text-muted-foreground">
-              Csv Format Expected
-            </p>
+            
           </div>
 
-          <Button variant="outline" className="w-full" onClick={handleBookingImport} disabled={isImporting}>
+          <Button variant="outline" onClick={handleBookingImport} disabled={isImporting} className="w-full bg-blue-500 hover:bg-blue-400 rounded-2xl font-semibold">
             {isImporting ? <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Importing
@@ -249,14 +247,12 @@ export default function Integrations() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="airbnb-csv">Upload Airbnb Csv</Label>
+            <Label htmlFor="airbnb-csv">Airbnb_CSV</Label>
             <Input id="airbnb-csv" ref={airbnbFileRef} type="file" accept=".csv" className="cursor-pointer" />
-            <p className="text-xs text-muted-foreground">
-              Csv Format Expected
-            </p>
+            
           </div>
 
-          <Button variant="outline" className="w-full" onClick={handleAirbnbImport} disabled={isImporting}>
+          <Button variant="outline" onClick={handleAirbnbImport} disabled={isImporting} className="w-full bg-blue-500 hover:bg-blue-400 rounded-2xl font-semibold text-sm">
             {isImporting ? <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Importing
