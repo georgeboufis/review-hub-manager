@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Star, Menu, X, BarChart3 } from 'lucide-react';
+import { Star, Menu, X, BarChart3, Puzzle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 const getNavigation = (t: (key: string) => string) => [{
   name: t('home'),
@@ -21,7 +21,8 @@ const getNavigation = (t: (key: string) => string) => [{
   icon: BarChart3
 }, {
   name: t('platform_integrations'),
-  href: '/integrations'
+  href: '/integrations',
+  icon: Puzzle
 }, {
   name: t('pricing_nav'),
   href: '/pricing'
