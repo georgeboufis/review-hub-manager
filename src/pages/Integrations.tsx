@@ -176,10 +176,7 @@ export default function Integrations() {
   return (
     <div className="container mx-auto py-8 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">{t('platform_integrations')}</h1>
-        <p className="text-muted-foreground">
-          {t('connect_review_platforms')}
-        </p>
+        <h1 className="text-3xl font-bold">PLATFORM INTEGRATIONS</h1>
       </div>
 
       {/* Google Reviews Integration */}
@@ -187,34 +184,31 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Globe className="h-5 w-5 text-green-600" />
-            <CardTitle>{t('google_reviews')}</CardTitle>
+            <CardTitle>GOOGLE REVIEWS</CardTitle>
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              {t('api_available')}
+              Api Available
             </Badge>
           </div>
-          <CardDescription>
-            {t('google_reviews_description')}
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           
           <div className="space-y-2">
-            <Label htmlFor="google-place-id">{t('place_id')}</Label>
+            <Label htmlFor="google-place-id">Place Id</Label>
             <Input
               id="google-place-id"
-              placeholder={t('enter_place_id')}
+              placeholder="Enter Place Id"
               value={googlePlaceId}
               onChange={(e) => setGooglePlaceId(e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              {t('find_place_id_text')}{' '}
+              Find Your Place Id Text{' '}
               <a 
                 href="https://developers.google.com/maps/documentation/places/web-service/place-id" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                {t('google_place_id_finder')}
+                Google Place Id Finder
               </a>
             </p>
           </div>
@@ -227,12 +221,12 @@ export default function Integrations() {
             {isConnecting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                {t('fetching_reviews')}
+                Fetching Reviews
               </>
             ) : (
               <>
                 <Globe className="w-4 h-4 mr-2" />
-                {t('fetch_google_reviews')}
+                Fetch Google Reviews
               </>
             )}
           </Button>
@@ -244,15 +238,12 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-blue-600" />
-            <CardTitle>{t('booking_reviews')}</CardTitle>
+            <CardTitle>BOOKING REVIEWS</CardTitle>
           </div>
-          <CardDescription>
-            {t('booking_description')}
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="booking-csv">{t('upload_booking_csv')}</Label>
+            <Label htmlFor="booking-csv">Upload Booking Csv</Label>
             <Input
               id="booking-csv"
               ref={bookingFileRef}
@@ -261,7 +252,7 @@ export default function Integrations() {
               className="cursor-pointer"
             />
             <p className="text-xs text-muted-foreground">
-              {t('csv_format_expected')}
+              Csv Format Expected
             </p>
           </div>
 
@@ -274,12 +265,12 @@ export default function Integrations() {
             {isImporting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                {t('importing')}
+                Importing
               </>
             ) : (
               <>
                 <Upload className="w-4 h-4 mr-2" />
-                {t('import_csv_file')}
+                Import Csv File
               </>
             )}
           </Button>
@@ -291,15 +282,12 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-red-600" />
-            <CardTitle>{t('airbnb_reviews')}</CardTitle>
+            <CardTitle>AIRBNB REVIEWS</CardTitle>
           </div>
-          <CardDescription>
-            {t('airbnb_description')}
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="airbnb-csv">{t('upload_airbnb_csv')}</Label>
+            <Label htmlFor="airbnb-csv">Upload Airbnb Csv</Label>
             <Input
               id="airbnb-csv"
               ref={airbnbFileRef}
@@ -308,7 +296,7 @@ export default function Integrations() {
               className="cursor-pointer"
             />
             <p className="text-xs text-muted-foreground">
-              {t('csv_format_expected')}
+              Csv Format Expected
             </p>
           </div>
 
@@ -321,12 +309,12 @@ export default function Integrations() {
             {isImporting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                {t('importing')}
+                Importing
               </>
             ) : (
               <>
                 <Upload className="w-4 h-4 mr-2" />
-                {t('import_csv_file')}
+                Import Csv File
               </>
             )}
           </Button>
@@ -338,14 +326,11 @@ export default function Integrations() {
         <CardHeader>
           <div className="flex items-center space-x-2">
             <MapPin className="h-5 w-5 text-purple-600" />
-            <CardTitle>{t('manual_review_entry')}</CardTitle>
+            <CardTitle>Manual Review Entry</CardTitle>
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              {t('always_available')}
+              Always Available
             </Badge>
           </div>
-          <CardDescription>
-            {t('manual_review_description')}
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <Button 
@@ -353,7 +338,7 @@ export default function Integrations() {
             className="w-full"
             onClick={() => setIsManualFormOpen(true)}
           >
-            {t('add_review_manually')}
+            Add Review Manually
           </Button>
         </CardContent>
       </Card>
