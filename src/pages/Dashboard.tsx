@@ -3,7 +3,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, MessageSquare } from 'lucide-react';
 import ReviewCard from '@/components/ReviewCard';
-import { ProductionHealthCheck } from '@/components/ProductionHealthCheck';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAnalytics, useReviews } from '@/hooks/useReviews';
 import { useAnalytics as useAppAnalytics } from '@/hooks/useAnalytics';
@@ -58,9 +57,6 @@ export default function Dashboard() {
           <span className="hidden sm:inline">Give Feedback</span>
         </Button>
       </div>
-
-      {/* Production Health Check */}
-      <ProductionHealthCheck />
 
       {/* Sticky Filters */}
       <StickyFilterBar />
